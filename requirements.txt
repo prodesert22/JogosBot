@@ -1,0 +1,7 @@
+discord.py
+django
+numpy
+PILLOW
+pycountry
+pyUFbr
+requests
