@@ -542,28 +542,6 @@ def fn_d_all_guild_jogo_user(guilda):
       except Exception as e:
             print(e)
 
-def fn_busca_furry(id_user):
-      cursor.execute('''SELECT * FROM furry WHERE id_user = ?;''',(id_user))
-      resultado = cursor.fetchone()
-      if(resultado):
-            return resultado
-      else:
-            return None
-
-def fn_insert_furry(id_user,porcentagem):
-      try:      
-            cursor.execute('''INSERT INTO furry(id_user, porcentagem) VALUES (?,?)''', (id_user, porcentagem))
-            db.commit()
-      except Exception as e:
-            print(e)
-
-def fn_edit_furry(id_user,porcentagem):
-      try:      
-            cursor.execute('''UPDATE furry SET porcentagem = ? WHERE id_user = ?''',(porcentagem, id_user))
-            db.commit()
-      except Exception as e:
-            print(e)
-
 def busca_prefix(id_guilda):
     cursor.execute('''SELECT prefix FROM Prefix WHERE id = ?;''',(id_guilda,))
     resultado = cursor.fetchone()

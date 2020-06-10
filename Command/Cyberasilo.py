@@ -69,7 +69,10 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                             burros_json ['burros'] = burros
                             json.dump(burros_json, json_file, indent=4)
     
-    @commands.command(name='furry')
+    @commands.command(name='furry',
+    usage='?furry',
+    description='Furra vai se lascar.',
+    brief='?furry')
     @Checks.is_Cyber()
     @commands.cooldown(1,10, commands.BucketType.user)
     async def furry(self,ctx):
@@ -83,7 +86,10 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
         elif(id_user == 493245195060641792 or id_user == 239949378700312576):
             await ctx.send('<@{}>, furra vai se foder <:pistoranjo_cy:591028729216761897>'.format(id_user))
 
-    @commands.command(name='burro')
+    @commands.command(name='burro',
+    usage='?burro',
+    description='Uma pessoal random ganha a tag de burro.',
+    brief='?burro')
     @Checks.is_Cyber()
     @commands.cooldown(1,300, commands.BucketType.guild)
     async def burro(self,ctx):
@@ -128,7 +134,10 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             burros_json ['burros'] = burros
             json.dump(burros_json, json_file, indent=4)
 
-    @commands.command(name='topburro')
+    @commands.command(name='topburro',
+    usage='?topburro',
+    description='Mostra as pessoas que mais foram burras.',
+    brief='?topburro')
     @Checks.is_Cyber()
     @commands.cooldown(1,10, commands.BucketType.channel)
     async def topburro(self,ctx):
@@ -153,7 +162,10 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
         except Exception as e:
             print(e)
 
-    @commands.command(name='gostosa')
+    @commands.command(name='gostosa',
+    usage='?gostosa',
+    description='Chama uma pessoa da role webnamorada de gostosa.',
+    brief='?gostosa')
     @Checks.is_Cyber()
     @commands.cooldown(1,60, commands.BucketType.channel)
     async def gostosa(self,ctx):
@@ -187,7 +199,10 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             gostosa_json['gostosas'] = lista_gostosa
             json.dump(gostosa_json, json_file, indent=4)
 
-    @commands.command(name='topgostosa')
+    @commands.command(name='topgostosa',
+    usage='?topgostosa',
+    description='Mostra as pessoas que mais foram gostosa.',
+    brief='?topgostosa')
     @Checks.is_Cyber()
     @commands.cooldown(1,15, commands.BucketType.channel)
     async def toptopgostosa(self,ctx):
@@ -214,18 +229,57 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
         except Exception as e:
             print(e)
 
-    @commands.command(name='luacs')
+    @commands.command(name='luacs',
+    usage='?luacs',
+    description='Luacs baianor <:baiano_cy:568072061034037248>.',
+    brief='?luacs')
     @Checks.is_Cyber()
     @commands.cooldown(1,10, commands.BucketType.user)
     async def luacs(self,ctx):
         await ctx.send("Luacs baianor <:baiano_cy:568072061034037248>")
 
-    @commands.command(name='machista')
+    @commands.command(name='machista',
+    usage='?machista',
+    description='<@&568591788248399884>.',
+    brief='?machista')
     @Checks.is_Cyber()
     @commands.cooldown(1,10, commands.BucketType.user)
     async def machista(self,ctx):
         if(ctx.guild.id == 223594824681521152):
             await ctx.send("<@&568591788248399884>")
+
+    @commands.command(name='casada',
+    usage='?casada',
+    description='Imagem random de do meme casada.',
+    brief='?casada')
+    @Checks.is_Cyber()
+    @commands.cooldown(1,10, commands.BucketType.user)
+    async def casada(self,ctx):
+        try:
+            imagens = ['https://media.discordapp.net/attachments/223594824681521152/704083129727713371/facebook_1587936895149_6660290071071343638.jpg','https://cdn.discordapp.com/attachments/223594824681521152/704083054548746240/facebook_1587936876498_6660289992844562176.jpg',
+            'https://cdn.discordapp.com/attachments/223594824681521152/704082953226944522/facebook_1587936851997_6660289890079469630.jpg','https://cdn.discordapp.com/attachments/223594824681521152/704066323067437127/facebook_1587932886586_6660273257943031400.jpg','https://media.discordapp.net/attachments/223594824681521152/707313778064228452/casada.png'
+            ,'https://cdn.discordapp.com/attachments/223594824681521152/699731545740673064/facebook_1586899393312_6655938472966180362.jpg']
+            img_escolhida = random.choice(imagens)
+            response = requests.get(img_escolhida)
+            img = BytesIO(response.content)
+            file = discord.File(img,filename='casada.png')
+            await ctx.send(file=file)
+        except Exception as e:
+            print(e)
+
+    @commands.command(name='gaius',
+    usage='?gaius',
+    description='Ok gaius.',
+    brief='?gaius')
+    @Checks.is_Cyber()
+    @commands.cooldown(1,1, commands.BucketType.guild)
+    async def gaius(self,ctx):
+        try:
+            gaius = [262321727722356737,471469462831366156]
+            gaius_escolhido = random.choice(gaius)
+            await ctx.send("Ok <@{}>".format(gaius_escolhido))
+        except Exception as e:
+            print(e)
 
 def setup(bot):
     bot.add_cog(Cyber(bot))

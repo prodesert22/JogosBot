@@ -27,7 +27,10 @@ class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
     def is_admin(self):
         return self.admin
 
-    @commands.command(name='dolar')
+    @commands.command(name='dolar',
+    usage='?dolar <data>',
+    description='Mostra a cotação do dólar.',
+    brief='?dolar\nMostra a cotação do dólar de agora\n?dolar 05/01/2010')
     @commands.cooldown(1,15, commands.BucketType.channel)
     async def contacao_dolar(self,ctx,*args):
         try:
@@ -50,7 +53,10 @@ class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
             print(e)
             await ctx.send('A data não está no formato DD/MM/AAAA')
 
-    @commands.command(name='euro')
+    @commands.command(name='euro',
+    usage='?euro <data>',
+    description='Mostra a cotação do euro.',
+    brief='?euro\nMostra a cotação do euro de agora\n?euro 05/01/2010')
     @commands.cooldown(1,15, commands.BucketType.channel)
     async def contacao_euro(self,ctx,*args):
         try:
@@ -73,7 +79,10 @@ class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
             print(e)
             await ctx.send('A data não está no formato DD/MM/AAAA')
 
-    @commands.command(name='libra')
+    @commands.command(name='libra',
+    usage='?libra <data>',
+    description='Mostra a cotação do libra.',
+    brief='?libra\nMostra a cotação do euro de agora\n?libra 05/01/2010')
     @commands.cooldown(1,15, commands.BucketType.channel)
     async def contacao_libra(self,ctx,*args):
         try:
@@ -96,7 +105,10 @@ class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
             print(e)
             await ctx.send('A data não está no formato DD/MM/AAAA')
 
-    @commands.command(name='corona')
+    @commands.command(name='corona',
+    usage='?corona <país / Estado br>',
+    description='Mostra a o números de casos do corona vírus.',
+    brief='?corona\nMostra o número de casos no brasil\n?corona sp\n?corona france')
     @commands.cooldown(3,15, commands.BucketType.channel)
     async def corona_total(self,ctx,*args):
         try:
@@ -150,7 +162,10 @@ class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
         except Exception as e:
             print(e)
                     
-    @commands.command(name='topcorona')
+    @commands.command(name='topcorona',
+    usage='?topcorona',
+    description='Mostra os países que tem mais casos.',
+    brief='?topcorona')
     @commands.cooldown(1,15, commands.BucketType.channel)
     async def top_corona(self,ctx):
         try:
