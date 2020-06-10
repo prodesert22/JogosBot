@@ -5,18 +5,17 @@ import json
 import random
 import requests
 
-from Functions.banco import busca_gostosa,update_gostosa,insert_gostosa,busca_top_gostosas
-from Functions.banco import busca_burrice,update_burrice,insert_burrice,busca_top_burros
 from io import BytesIO
 
+from Functions import Checks
+
+from Functions.banco import busca_gostosa,update_gostosa,insert_gostosa,busca_top_gostosas
+from Functions.banco import busca_burrice,update_burrice,insert_burrice,busca_top_burros
+
+antifurro = [236844195782983680,293360838461620225,207294581266579457,281146568428486656]
+
 def is_antifurro(ctx):
-    if(ctx.author.id == 236844195782983680):
-        return True
-    elif(ctx.author.id == 293360838461620225):
-        return True
-    elif(ctx.author.id == 207294581266579457):
-        return True
-    elif(ctx.author.id == 281146568428486656):
+    if(ctx.author.id in antifurro):
         return True
     else:
         return False
@@ -71,11 +70,12 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                             json.dump(burros_json, json_file, indent=4)
     
     @commands.command(name='furry')
+    @Checks.is_Cyber()
     @commands.cooldown(1,10, commands.BucketType.user)
     async def furry(self,ctx):
         id_user = ctx.author.id 
         if(is_antifurro(ctx) == True):
-            await ctx.send('Furra vai se foder<@{}>'.format(493245195060641792))
+            await ctx.send('Furra vai se foder <@{}>'.format(493245195060641792))
         elif(id_user == 258070435462119425 or id_user == 194991499740577794 or id_user == 330721776403218433):
             await ctx.send('Você é furro <@{}> e vai se foder'.format(id_user))
         elif(id_user == 206108254273536000):
@@ -84,6 +84,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             await ctx.send('<@{}>, furra vai se foder <:pistoranjo_cy:591028729216761897>'.format(id_user))
 
     @commands.command(name='burro')
+    @Checks.is_Cyber()
     @commands.cooldown(1,300, commands.BucketType.guild)
     async def burro(self,ctx):
         with open('Data/burros.json') as json_file:
@@ -127,7 +128,33 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             burros_json ['burros'] = burros
             json.dump(burros_json, json_file, indent=4)
 
+    @commands.command(name='topburro')
+    @Checks.is_Cyber()
+    @commands.cooldown(1,10, commands.BucketType.channel)
+    async def topburro(self,ctx):
+        try:
+            lista_burros = busca_top_burros()
+            if(lista_burros):
+                menssagem = '```Os mais burros dos server são:\n'
+                contador = 0
+                for burro in lista_burros:
+                    str_burro = ''
+                    id_user = burro.get_id()
+                    if(ctx.guild.get_member(id_user) is not None):
+                        quantidade = burro.get_qtd()
+                        membro = ctx.guild.get_member(id_user)
+                        str_burro = '[{}] {} foi burro {} vezes'.format(contador+1,membro.name,quantidade)
+                        menssagem += '{}\n'.format(str_burro)
+                        contador += 1
+                    if(contador == 10):
+                        break
+                menssagem += '\n```'
+            await ctx.send(menssagem)
+        except Exception as e:
+            print(e)
+
     @commands.command(name='gostosa')
+    @Checks.is_Cyber()
     @commands.cooldown(1,60, commands.BucketType.channel)
     async def gostosa(self,ctx):
         with open('Data/gostosas.json') as json_file:
@@ -161,6 +188,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             json.dump(gostosa_json, json_file, indent=4)
 
     @commands.command(name='topgostosa')
+    @Checks.is_Cyber()
     @commands.cooldown(1,15, commands.BucketType.channel)
     async def toptopgostosa(self,ctx):
         try:
@@ -187,9 +215,17 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             print(e)
 
     @commands.command(name='luacs')
+    @Checks.is_Cyber()
     @commands.cooldown(1,10, commands.BucketType.user)
     async def luacs(self,ctx):
         await ctx.send("Luacs baianor <:baiano_cy:568072061034037248>")
+
+    @commands.command(name='machista')
+    @Checks.is_Cyber()
+    @commands.cooldown(1,10, commands.BucketType.user)
+    async def machista(self,ctx):
+        if(ctx.guild.id == 223594824681521152):
+            await ctx.send("<@&568591788248399884>")
 
 def setup(bot):
     bot.add_cog(Cyber(bot))

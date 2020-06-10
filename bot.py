@@ -1,13 +1,14 @@
 import asyncio
 import discord
-import math
 import os
 
 from discord.ext import commands
 
 from Functions.banco import busca_prefix,insert_prefix
-from Command.Help import help_command
+from Functions import Checks
+
 from tokens import token
+
 
 DEFAULT_PREFIX = '?'
 
@@ -27,10 +28,9 @@ bot.remove_command('help')
 
 @bot.check
 def guild(ctx):
-    return ctx.guild is not None
-
-async def is_owner(ctx):
-    return ctx.author.id == 236844195782983680
+    if ctx.guild:
+        return True
+    raise Checks.No_Guild
 
 @bot.event
 async def on_ready():
@@ -41,45 +41,10 @@ async def on_ready():
     
 @bot.event
 async def on_command_error(ctx,error):
-    info = False
-    mensagem = None
-    delay = 5
-    print(error)
-    if isinstance(error, commands.CommandOnCooldown):
-        mensagem = 'Espere {} segundos para usar esse comando novamente'.format(math.ceil(error.retry_after))
-    elif isinstance(error,commands.InvalidEndOfQuotedStringError) or isinstance(error, commands.BadArgument):
-        mensagem = 'Erro, parametro(s) informado inválido.'
-        delay = 2
-    elif isinstance(error, commands.DisabledCommand):
-        mensagem = '🛠Comando desativado para manutenção'
-        delay = 3
-    elif isinstance(error, commands.CheckFailure):
-        if(ctx.guild is not None):
-            mensagem = "Permissão negada."
-            delay = 2
-    elif isinstance(error, commands.MissingRequiredArgument):
-        info = True
-        if(not ctx.command.name == 'help'):
-            p = await bot.get_prefix(ctx.message)
-            h = help_command(ctx.command,p)
-            await ctx.send(embed=h)
-    elif isinstance(error, commands.CommandNotFound):
-        pass
-    else:
-        mensagem = 'Um erro inesperado acontenceu.'
-        print("Erro: ",error)
-        print("Tipo: ",type(error))
-        print(ctx.message.content)
-    if(mensagem is not None):
-        delt = await ctx.channel.send(mensagem)
-        if(info == False):
-            await delt.delete(delay=delay)
-            await ctx.message.delete(delay=delay)
-            if(ctx.command):
-                ctx.command.reset_cooldown(ctx)
+    await Checks.c_error(ctx,error)
 
 @bot.command()
-@commands.check(is_owner)
+@Checks.is_owner()
 async def disable(ctx, command):
     comando = bot.get_command(command)
     if comando is not None:
@@ -89,7 +54,7 @@ async def disable(ctx, command):
         print('Não encontrado')
 
 @bot.command()
-@commands.check(is_owner)
+@Checks.is_owner()
 async def enable(ctx, command):
     comando = bot.get_command(command)
     if comando is not None:
@@ -99,7 +64,7 @@ async def enable(ctx, command):
         print('Não encontrado')
 
 @bot.command()
-@commands.check(is_owner)
+@Checks.is_owner()
 async def load(ctx, extension):
     try:
         bot.load_extension(f'Command.{extension.capitalize()}')
@@ -109,7 +74,7 @@ async def load(ctx, extension):
         await ctx.send(f'Erro em carregar {extension.capitalize()}.')
 
 @bot.command()
-@commands.check(is_owner)
+@Checks.is_owner()
 async def unload(ctx, extension):
     try:
         bot.unload_extension(f'Command.{extension.capitalize()}')
@@ -119,7 +84,7 @@ async def unload(ctx, extension):
         await ctx.send(f'Erro em descarregar {extension.capitalize()}.')
 
 @bot.command(name='reload')
-@commands.check(is_owner)
+@Checks.is_owner()
 async def reload_cog(ctx, extension):
     try:
         for _ in range(2):
@@ -131,7 +96,7 @@ async def reload_cog(ctx, extension):
         await ctx.send(f'Erro em recarregar {extension.capitalize()}.')
 
 @bot.command(name='reload_all')
-@commands.check(is_owner)
+@Checks.is_owner()
 async def reload_cog_all(ctx):
     try:
         for filename in os.listdir('./Command'):

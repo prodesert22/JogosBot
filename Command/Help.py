@@ -22,6 +22,9 @@ def help_command(comando,prefix):
 def is_admin_ower(ctx):
     return ctx.author.id == 236844195782983680 or ctx.guild.owner_id == ctx.author.id
 
+def is_cyber(cog, ctx):
+    return cog.__class__.__name__ == 'Cyber' and not ctx.guild.id == 223594824681521152
+
 class Help(commands.Cog):
     def __init__ (self,bot):
         self.bot = bot
@@ -46,9 +49,15 @@ class Help(commands.Cog):
             cog = comando.cog
             if(cog is not None):
                 if(cog.is_hidden() is False):
-                    p = await self.bot.get_prefix(ctx.message)
-                    h = help_command(comando,p)
-                    await ctx.send(embed=h)
+                    if(is_cyber(cog,ctx) == False):
+                        p = await self.bot.get_prefix(ctx.message)
+                        h = help_command(comando,p)
+                        await ctx.send(embed=h)
+                    else:
+                        msg = 'Comando não encontrado.'
+                        delte = await ctx.send(msg)
+                        await ctx.message.delete(delay=3)
+                        await delte.delete(delay=3) 
                 elif(cog.is_admin() is True):
                     if(is_admin_ower(ctx) is True):
                         p = await self.bot.get_prefix(ctx.message)
@@ -86,6 +95,8 @@ class Help(commands.Cog):
                         if(is_admin_ower(ctx) is False):
                             continue
                 comandos = ''
+                if(is_cyber(c_ext,ctx)):
+                    continue
                 for c in c_ext.walk_commands():
                     comandos += "__**{}**__ ".format(c) 
                 h.add_field(name="{}**{}**".format(c_ext.get_emoji(),nome),value=comandos,inline=True)

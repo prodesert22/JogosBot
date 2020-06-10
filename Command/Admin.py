@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from Functions import Checks
+
 from Functions.banco import update_prefix
 
 class Admin(commands.Cog,name= "Comandos para Admins"):
@@ -36,8 +38,8 @@ class Admin(commands.Cog,name= "Comandos para Admins"):
     @commands.command(name="prefix", aliases=['c_prefix','change_prefix'],
     usage='?prefix <prefix>',
     description='Altere o prefix do bot neste servidor.',
-    brief='?prefix !')
-    @commands.check(is_owner_server)
+    brief='?prefix !\nIrá mudar o prefix para !')
+    @Checks.is_owner_server()
     @commands.cooldown(1,30, commands.BucketType.guild)
     async def change_prefix(self,ctx, prefix):
         if(len(prefix)<=3):
