@@ -260,10 +260,9 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             'https://cdn.discordapp.com/attachments/223594824681521152/704082953226944522/facebook_1587936851997_6660289890079469630.jpg','https://cdn.discordapp.com/attachments/223594824681521152/704066323067437127/facebook_1587932886586_6660273257943031400.jpg','https://media.discordapp.net/attachments/223594824681521152/707313778064228452/casada.png'
             ,'https://cdn.discordapp.com/attachments/223594824681521152/699731545740673064/facebook_1586899393312_6655938472966180362.jpg']
             img_escolhida = random.choice(imagens)
-            response = requests.get(img_escolhida)
-            img = BytesIO(response.content)
-            file = discord.File(img,filename='casada.png')
-            await ctx.send(file=file)
+            emb = discord.Embed(colour = discord.Colour.red())
+            emb.set_image(url=img_escolhida)
+            await ctx.send(embed=emb)
         except Exception as e:
             print(e)
 
