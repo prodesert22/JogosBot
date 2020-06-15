@@ -5,15 +5,15 @@ import Functions.blackjack
 import Functions.mina
 import Functions.slot_machine
 
-from Functions.banco import busca_user_id
-from Functions.blackjack import blackjack_game
-from Functions.mina import cal_matriz, gerar_texto
-from Functions.slot_machine import maquina
-
 from importlib import reload
 reload(Functions.blackjack)
 reload(Functions.mina)
 reload(Functions.slot_machine)
+
+from Functions.banco import busca_user_id
+from Functions.blackjack import blackjack_game
+from Functions.mina import cal_matriz, gerar_texto
+from Functions.slot_machine import maquina
 
 MINIMO = 50
 

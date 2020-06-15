@@ -6,10 +6,10 @@ import pycountry
 from pyUFbr.baseuf import ufbr
 
 import Functions.pesquisas
-from Functions.pesquisas import dolar,euro,dolar_hoje,euro_hoje,libra,libra_hoje,corona,topcorona
-
 from importlib import reload
 reload(Functions.pesquisas)
+
+from Functions.pesquisas import dolar,euro,dolar_hoje,euro_hoje,libra,libra_hoje,corona,topcorona
 
 class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
     def __init__ (self,bot):

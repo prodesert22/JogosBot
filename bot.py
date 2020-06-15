@@ -9,7 +9,6 @@ from Functions import Checks
 
 from tokens import token
 
-
 DEFAULT_PREFIX = '?'
 
 async def get_prefix(bot, message):

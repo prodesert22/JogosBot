@@ -6,12 +6,11 @@ import random
 import typing
 
 import Functions.credito
+from importlib import reload
+reload(Functions.credito)
 
 from Functions.banco import busca_user_id,edit_user,fncooldown,fncont,fn_delete_cd
 from Functions.credito import transferir,gerar_embed_credito
-
-from importlib import reload
-reload(Functions.credito)
 
 def msg_cooldown(resultado,comando):
     if(resultado[0] == True):
