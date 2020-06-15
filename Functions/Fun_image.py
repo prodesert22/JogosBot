@@ -15,9 +15,6 @@ PATH_I = os.path.join(PATH_DATA,'Images')
 
 class Error_image():pass
 
-def verifica_tamanho(image):
-    img = Image.open(image)
-
 def verifica_url(url):
     var = False
     try:
