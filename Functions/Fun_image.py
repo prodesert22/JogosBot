@@ -13,91 +13,94 @@ PATH_ABS = os.path.abspath(r"../JogosBot")
 PATH_DATA = os.path.join(PATH_ABS,"Data")
 PATH_I = os.path.join(PATH_DATA,'Images')
 
-class Error_image():pass
+class Error_image():
+    def __init__(self,message,tipo):
+        self.message = message
+        self.tipo = tipo
 
-def verifica_url(url):
-    var = False
+    def get_message(self):
+        return self.message
+
+    def get_tipo(self):
+        return self.tipo
+
+def verifica_tamanho(image):
     try:
-        validate = URLValidator(schemes=('http', 'https', 'ftp', 'ftps', 'rtsp', 'rtmp'))
-        validate(url)
-        if(url.endswith(".png") or url.endswith(".jpg") or url.endswith(".jpge")):
-            return True
+        img = Image.open(image)
+        if(img.size[0] > 2000 or img.size[1] > 2000):
+            return 1
         else:
-            return var
-    except ValidationError:
-        return var
-
-def verifica_tipo_img(message):
-    imagens = list()
-    if message.embeds:
-        if len(message.embeds) == 1:
-            if(message.embeds[0].image):
-                if(verifica_url(message.embeds[0].image.url) == True):
-                    img = download_image(message.embeds[0].image.url)
-                    imagens.append(img)
-        else:
-            for embed in message.embeds:
-                if(embed.image):
-                    if(verifica_url(embed.image.url) == True):
-                        img = download_image(embed.image.url)
-                        imagens.append(img)
-    elif message.attachments:
-        if len(message.attachments) == 1:
-            if(verifica_url(message.attachments[0].url) == True):
-                img = download_image(message.attachments[0].url)
-                imagens.append(img)
-        else:
-            for a in message.attachments:
-                if(verifica_url(a.url) == True):
-                    img = download_image(a.url)
-                    imagens.append(img)
-    return imagens
-
-async def get_image(message):
-    channel = message.channel
-    content = message.content
-    imagens = list()
-    if(message.attachments):
-        imagem = message.attachments[0]
-        if(verifica_url(imagem.url) == True):
-            img = download_image(imagem.url)
-            imagens.append(img)
-    else:
-        async for message in channel.history(limit=31):
-            if message.content == content:
-                continue
-            else:
-                msg = message.content.split()
-                if(len(msg)==1):
-                    if verifica_url(msg[0]) == True:
-                        img = download_image(msg[0])
-                        imagens.append(img)
-                        break
-                    else:
-                        imagens = verifica_tipo_img(message)
-                        if len(imagens)>0:
-                            break
-                        else:
-                            continue
-                else:
-                    for m in msg:
-                        if verifica_url(m) == True:
-                            img = download_image(m)
-                            imagens.append(img)
-                    if len(imagens) == 0:
-                        imagens = verifica_tipo_img(message)
-                        if len(imagens)>0:
-                            break
-                    else:
-                        break
-    return imagens
+            return 0
+    except:
+        return 2
 
 def download_image(url):
     response = requests.get(url)
     if(response.status_code == 200):
-        return BytesIO(response.content)
+        image = BytesIO(response.content)
+        image2 = BytesIO(response.content)
+        v_t = verifica_tamanho(image2)
+        if(v_t == 0):
+            return image
+        elif(v_t == 1):
+            return Error_image('Imagem excede 2000 pixels.',1)
+        else:
+            return Error_image('Erro em donwload da imagem.',3)
     else:
-        return Error_image()
+        return Error_image('Erro em donwload da imagem.',0)
+    
+def verifica_url(url):
+    try:
+        validate = URLValidator(schemes=('http', 'https', 'ftp', 'ftps', 'rtsp', 'rtmp'))
+        validate(url)
+        return True
+    except ValidationError:
+        return False
+
+async def get_image(message):
+    channel = message.channel
+    content = message.content
+    if(message.attachments):
+        print('att')
+        imagem = message.attachments[0]
+        img = download_image(imagem.url)
+        return img
+    elif(message.embeds):
+        print('emb')
+        for emb in message.embeds:
+            if(emb.image):
+                img = download_image(emb.image.url)
+                return img
+    else:
+        img = Error_image('Imagem não encontrada',2)
+        async for message in channel.history(limit=31):
+            if message.content == content:
+                continue
+            else:
+                if message.attachments:
+                    img = download_image( message.attachments[0].url)
+                    break
+                elif message.embeds:
+                    for embed in message.embeds:
+                        if(embed.image):
+                            if(emb.image):
+                                img = download_image(emb.image.url)
+                                break     
+
+                    break
+                else:
+                    urls = message.content.split()
+                    for u in urls:
+                        if(verifica_url(u) == True):
+                            img = download_image(u)
+                            if isinstance(img,Error_image):
+                                if(img.get_tipo == 3):
+                                    continue
+                                else:
+                                    break
+                        else:
+                            continue
+        return img
 
 def func_magik(image,scale):
     scale = 1
