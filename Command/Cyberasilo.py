@@ -205,7 +205,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             role = discord.utils.get(ctx.guild.roles, name="webnamorada")
             gostosas = list()
             for m in role.members:
-                if m.id != 552595247809429546 and m.id != 525447699579797505 and m.id != 238803776507478017 and m.id != 523626016145539073 and m.id != 304873309164535808:
+                if m.id != 552595247809429546 and m.id != 525447699579797505 and m.id != 238803776507478017 and m.id != 523626016145539073 and m.id != 304873309164535808 and m.id != 323236550555074562:
                     if(not m.id in lista_gostosa):
                         gostosas.append(m)
             random.shuffle(gostosas)
