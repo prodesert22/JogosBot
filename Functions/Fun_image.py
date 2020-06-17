@@ -83,10 +83,9 @@ async def get_image(message):
                 elif message.embeds:
                     for embed in message.embeds:
                         if(embed.image):
-                            if(emb.image):
-                                img = download_image(emb.image.url)
+                            if(embed.image):
+                                img = download_image(embed.image.url)
                                 break     
-
                     break
                 else:
                     urls = message.content.split()
