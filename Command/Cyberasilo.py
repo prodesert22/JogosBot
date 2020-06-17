@@ -3,6 +3,7 @@ from discord.ext import commands
 
 import json
 import random
+import re
 import requests
 
 from io import BytesIO
@@ -26,6 +27,9 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             self.emoji = '🐮'
             self.hidden = False
             self.admin = False
+            self.cont_copi = 0
+            self.author_anterior = None
+            self.anterior = ''
 
     def get_emoji(self):
         return self.emoji
@@ -35,6 +39,32 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
 
     def is_admin(self):
         return self.admin
+
+    @commands.Cog.listener()
+    async def on_message(self,message):
+        if(message.guild and message.author.bot == False):
+            m = message.content.lower()
+            if(m == self.anterior and self.author_anterior != message.author.id and message.channel.id == 223594824681521152):
+                self.cont_copi +=1
+                self.author_anterior = message.author.id
+                if(self.cont_copi == 3):
+                    if(re.search(':', m, re.IGNORECASE) is not None and re.search('<', m, re.IGNORECASE) is None):
+                        m = m.replace(':','')
+                        emojis = message.guild.emojis
+                        for e in emojis:
+                            if(e.name == m):
+                                if(e.animated == True):
+                                    await message.channel.send('<a:{}:{}>'.format(e.name,e.id))
+                                else:
+                                    await message.channel.send('<:{}:{}>'.format(e.name,e.id))
+                                break
+                    else:            
+                        await message.channel.send(message.content)                 
+                    self.cont_copi = 0
+            elif(message.channel.id == 223594824681521152):
+                self.anterior = m
+                self.author_anterior = message.author.id
+                self.cont_copi = 1
 
     @commands.Cog.listener()
     async def on_command_error(self,ctx,error):
