@@ -70,11 +70,15 @@ class Utils(commands.Cog,name= "Utilidades"):
         emote_regex = re.compile(r'<:.*:(?P<id>\d*)>')
         match = emote_regex.match(emoji)
         if match:
-            emote = 'https://cdn.discordapp.com/emojis/{}.png'.format(str(emoji))
-            emote_gif = 'https://cdn.discordapp.com/emojis/{}.gif'.format(str(emoji))
+            emote = 'https://cdn.discordapp.com/emojis/{}.png'.format(str(match.group('id')))
+            emote_gif = 'https://cdn.discordapp.com/emojis/{}.gif'.format(str(match.group('id')))
+            print(emote)
             response_png = requests.get(emote)
             response_gif = requests.get(emote_gif)
+            print(type(response_png.content))
             png = BytesIO(response_png.content)
+            png.seek(0)
+            print(png.tell())
             file_png = discord.File(png,filename='emoji.png')
             if response_gif.status_code == 200:
                 gif = BytesIO(response_gif.content)
@@ -88,6 +92,7 @@ class Utils(commands.Cog,name= "Utilidades"):
                 emote_gif = 'https://cdn.discordapp.com/emojis/{}.gif'.format(str(emoji))
                 response_png = requests.get(emote)
                 response_gif = requests.get(emote_gif)
+                print(type(response_png.content))
                 png = BytesIO(response_png.content)
                 file_png = discord.File(png,filename='emoji.png')
                 if response_gif.status_code == 200:
