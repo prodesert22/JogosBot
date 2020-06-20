@@ -1,3 +1,4 @@
+cairosvg
 discord.py
 django
 numpy
