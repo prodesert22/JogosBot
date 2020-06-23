@@ -13,7 +13,7 @@ from Functions import Checks
 from Functions.banco import busca_gostosa,update_gostosa,insert_gostosa,busca_top_gostosas
 from Functions.banco import busca_burrice,update_burrice,insert_burrice,busca_top_burros
 
-antifurro = [236844195782983680,293360838461620225,207294581266579457,281146568428486656]
+antifurro = [236844195782983680,293360838461620225,207294581266579457,281146568428486656,297129936156884992]
 
 def is_antifurro(ctx):
     if(ctx.author.id in antifurro):
