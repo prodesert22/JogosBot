@@ -233,7 +233,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
     usage='?topgostosa',
     description='Mostra as pessoas que mais foram gostosa.',
     brief='?topgostosa')
-    #@Checks.is_Cyber()
+    @Checks.is_Cyber()
     @commands.cooldown(1,15, commands.BucketType.channel)
     async def toptopgostosa(self,ctx):
         try:
