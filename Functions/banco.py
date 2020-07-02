@@ -185,72 +185,6 @@ def busca_users(guilda):
       except:
             return lista_user
 
-def busca_top_gostosas():
-      lista_gostosas = list()
-      try:
-            for row in cursor.execute('SELECT * FROM gostosa ORDER BY quantidade DESC'):
-                  lista_gostosas.append(User(row[0],row[1]))
-            return lista_gostosas
-      except Exception as e:
-            print(e)
-            return None
-
-def update_gostosa(id_user,quantidade):
-      try:
-            cursor.execute('''UPDATE gostosa SET quantidade = ? WHERE id_user = ?''',(quantidade,id_user))
-            db.commit()
-      except Exception as e:
-            print(e)
-
-def insert_gostosa(id_user):
-      try:      
-            cursor.execute('INSERT INTO gostosa(id_user, quantidade) VALUES (?,?)',(id_user,1))
-            db.commit()
-      except Exception as e:
-            print(e)
-            print('Erro em inserir gostosa')
-
-def busca_gostosa(id_user):
-      cursor.execute('SELECT * FROM gostosa WHERE id_user = ? ;',(id_user,))
-      resultado = cursor.fetchone()
-      if(resultado):
-            return resultado
-      else:
-            return None
-
-def busca_top_burros():
-      lista_burros = list()
-      try:
-            for row in cursor.execute('SELECT * FROM burro ORDER BY quantidade DESC'):
-                  lista_burros.append(User(row[0],row[1]))
-            return lista_burros
-      except Exception as e:
-            print(e)
-            return None
-      
-def insert_burrice(id_user):
-      try:      
-            cursor.execute('INSERT INTO burro(id_user, quantidade) VALUES (?,?)',(id_user,1))
-            db.commit()
-      except Exception as e:
-            print(e)
-            print('Erro em inserir galo')
-
-def update_burrice(id_user,quantidade):
-      try:
-            cursor.execute('''UPDATE burro SET quantidade = ? WHERE id_user = ?''',(quantidade,id_user))
-            db.commit()
-      except Exception as e:
-            print(e)
-
-def busca_burrice(id_user):
-      cursor.execute('SELECT * FROM burro WHERE id_user = ? ;',(id_user,))
-      resultado = cursor.fetchone()
-      if(resultado):
-            return resultado
-      else:
-            return None
-
 def busca_galos(guilda):
       lista_user = list()
       lista_busca = list()
@@ -570,3 +504,78 @@ def delete_prefix(id_guild):
             db.commit()
       except Exception as e:
             print(e)
+
+def busca_top_gostosas():
+      lista_gostosas = list()
+      try:
+            for row in cursor.execute('SELECT * FROM gostosa ORDER BY quantidade DESC'):
+                  lista_gostosas.append(User(row[0],row[1]))
+            return lista_gostosas
+      except Exception as e:
+            print(e)
+            return None
+
+def update_gostosa(id_user,quantidade):
+      try:
+            cursor.execute('''UPDATE gostosa SET quantidade = ? WHERE id_user = ?''',(quantidade,id_user))
+            db.commit()
+      except Exception as e:
+            print(e)
+
+def insert_gostosa(id_user):
+      try:      
+            cursor.execute('INSERT INTO gostosa(id_user, quantidade) VALUES (?,?)',(id_user,1))
+            db.commit()
+      except Exception as e:
+            print(e)
+            print('Erro em inserir gostosa')
+
+def busca_gostosa(id_user):
+      cursor.execute('SELECT * FROM gostosa WHERE id_user = ? ;',(id_user,))
+      resultado = cursor.fetchone()
+      if(resultado):
+            return resultado
+      else:
+            return None
+
+def reset_table_gostosa():
+      try:
+            cursor.execute('''TRUNCATE gostosa''')
+            db.commit()
+            return True
+      except Exception as e:
+            print(e)
+            return False
+
+def busca_top_burros():
+      lista_burros = list()
+      try:
+            for row in cursor.execute('SELECT * FROM burro ORDER BY quantidade DESC'):
+                  lista_burros.append(User(row[0],row[1]))
+            return lista_burros
+      except Exception as e:
+            print(e)
+            return None
+      
+def insert_burrice(id_user):
+      try:      
+            cursor.execute('INSERT INTO burro(id_user, quantidade) VALUES (?,?)',(id_user,1))
+            db.commit()
+      except Exception as e:
+            print(e)
+            print('Erro em inserir galo')
+
+def update_burrice(id_user,quantidade):
+      try:
+            cursor.execute('''UPDATE burro SET quantidade = ? WHERE id_user = ?''',(quantidade,id_user))
+            db.commit()
+      except Exception as e:
+            print(e)
+
+def busca_burrice(id_user):
+      cursor.execute('SELECT * FROM burro WHERE id_user = ? ;',(id_user,))
+      resultado = cursor.fetchone()
+      if(resultado):
+            return resultado
+      else:
+            return None
