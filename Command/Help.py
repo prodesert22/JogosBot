@@ -88,14 +88,14 @@ class Help(commands.Cog):
                 description='Use `{}help <comando>` para saber mais sobre este comando'.format(p[0]))
             for nome in self.bot.cogs:
                 c_ext = self.bot.cogs[nome]
-                if(c_ext.is_hidden() is True):
+                if(c_ext.is_hidden() is True and not ctx.author.id == 236844195782983680):
                     if(c_ext.is_admin() is False):
                         continue
                     else:
                         if(is_admin_ower(ctx) is False):
                             continue
                 comandos = ''
-                if(is_cyber(c_ext,ctx)):
+                if(is_cyber(c_ext,ctx) and not ctx.author.id == 236844195782983680):
                     continue
                 for c in c_ext.walk_commands():
                     comandos += "__**{}**__ ".format(c) 

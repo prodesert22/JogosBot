@@ -14,6 +14,14 @@ except Exception as e :
       print(e)
       print('Erro ao conectar') 
 
+def close_db():
+      try:
+            db = sqlite3.connect(PATH_DB)
+            db.close()
+            print('Db fechado')
+      except Exception as e:
+            print(e)
+
 def busca_ban(id_user,guilda):
       cursor.execute('''SELECT * FROM ban WHERE id_user = ? and guilda = ? ;''',(id_user,guilda)) 
       resultado = cursor.fetchone()
@@ -540,7 +548,7 @@ def busca_gostosa(id_user):
 
 def reset_table_gostosa():
       try:
-            cursor.execute('''TRUNCATE gostosa''')
+            cursor.execute('''DELETE FROM gostosa''')
             db.commit()
             return True
       except Exception as e:

@@ -1,9 +1,15 @@
 import discord
 from discord.ext import commands
 
-from Functions import Checks
+import Functions.banco
+import Functions.Checks
+from importlib import reload
+reload(Functions.Checks)
+Functions.banco.close_db()
+reload(Functions.banco)
 
-from Functions.banco import reset_table_gostosa
+from Functions import Checks
+from Functions.banco import reset_table_gostosa, update_gostosa, busca_gostosa
 
 class Owner(commands.Cog,name= "Dono"):
     """Comandos só acessados por admins"""
@@ -30,6 +36,14 @@ class Owner(commands.Cog,name= "Dono"):
             await ctx.send('Resetada a tabela')
         else:
             await ctx.send('Erro')
+
+    @commands.command()
+    @Checks.is_owner()
+    async def add_ponto_gostosa(self,ctx, id_user: int, potuacao: int):
+        if busca_gostosa(id_user):
+            update_gostosa(id_user,potuacao)
+            await ctx.send('Adicionando')
+            
 
 def setup(bot):
     bot.add_cog(Owner(bot))
