@@ -530,9 +530,9 @@ def update_gostosa(id_user,quantidade):
       except Exception as e:
             print(e)
 
-def insert_gostosa(id_user):
+def insert_gostosa(id_user,quantidade= 1):
       try:      
-            cursor.execute('INSERT INTO gostosa(id_user, quantidade) VALUES (?,?)',(id_user,1))
+            cursor.execute('INSERT INTO gostosa(id_user, quantidade) VALUES (?,?)',(id_user,quantidade))
             db.commit()
       except Exception as e:
             print(e)

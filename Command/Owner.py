@@ -9,7 +9,7 @@ Functions.banco.close_db()
 reload(Functions.banco)
 
 from Functions import Checks
-from Functions.banco import reset_table_gostosa, update_gostosa, busca_gostosa
+from Functions.banco import reset_table_gostosa, update_gostosa, busca_gostosa, insert_gostosa
 
 class Owner(commands.Cog,name= "Dono"):
     """Comandos só acessados por admins"""
@@ -39,11 +39,13 @@ class Owner(commands.Cog,name= "Dono"):
 
     @commands.command()
     @Checks.is_owner()
-    async def add_ponto_gostosa(self,ctx, id_user: int, potuacao: int):
+    async def add_ponto_gostosa(self,ctx, id_user: int, pontuacao: int):
         if busca_gostosa(id_user):
-            update_gostosa(id_user,potuacao)
+            update_gostosa(id_user,pontuacao)
             await ctx.send('Adicionando')
-            
+        else:
+            insert_gostosa(pontuacao)
+            await ctx.send('Adicionando')
 
 def setup(bot):
     bot.add_cog(Owner(bot))
