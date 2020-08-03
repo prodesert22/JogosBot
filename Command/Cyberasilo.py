@@ -10,10 +10,10 @@ from io import BytesIO
 
 from Functions import Checks
 
-from Functions.banco import busca_gostosa,update_gostosa,insert_gostosa,busca_top_gostosas
+from Functions.banco import busca_gostosa,update_gostosa,insert_gostosa,busca_top_gostosas,reset_table_gostosa,delete_gostosa
 from Functions.banco import busca_burrice,update_burrice,insert_burrice,busca_top_burros
 
-antifurro = [236844195782983680,293360838461620225,207294581266579457,281146568428486656,297129936156884992]
+antifurro = [236844195782983680,293360838461620225,207294581266579457,281146568428486656,297129936156884992,258070435462119425]
 
 def is_antifurro(ctx):
     if(ctx.author.id in antifurro):
@@ -109,7 +109,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
         id_user = ctx.author.id 
         if(is_antifurro(ctx) == True):
             await ctx.send('Furra vai se foder <@{}>'.format(493245195060641792))
-        elif(id_user == 258070435462119425 or id_user == 194991499740577794 or id_user == 330721776403218433):
+        elif(id_user == 194991499740577794 or id_user == 330721776403218433):
             await ctx.send('Você é furro <@{}> e vai se foder'.format(id_user))
         elif(id_user == 206108254273536000):
             await ctx.send('<@{}>, furro vai se foder <:pistoranjo_cy:591028729216761897>'.format(id_user))
@@ -310,5 +310,51 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
         except Exception as e:
             print(e)
 
+    @commands.command(name='pendrive',
+    usage='?pendrive',
+    description='Playlist do pendrive do gilson.',
+    brief='?pendrive')
+    @Checks.is_Cyber()
+    @commands.cooldown(1,20, commands.BucketType.guild)
+    async def pendrive(self,ctx):
+        await ctx.send('Pendrive do gilso, o melhor pendrive do brasil!\nhttps://open.spotify.com/playlist/3p3DOjevqEBK23hSdXwZrQ?si=Ap-fl5vzQB69jv8uDiyZ7A')
+        
+    @commands.command(name='espadinha',
+    usage='?espadinha',
+    description='Playlist doo metal espadinha.',
+    brief='?espadinha')
+    @Checks.is_Cyber()
+    @commands.cooldown(1,20, commands.BucketType.guild)
+    async def espadinha(self,ctx):
+        await ctx.send('Playlist espadinha, a melhor do brasil!\nhttps://open.spotify.com/playlist/0YLqTiBdJD7y97aifvByCZ?si=v4iWABFWR6Sl2otDCE-ttw')
+
+    @commands.command()
+    @Checks.is_owner()
+    async def reset_gostosa(self,ctx):
+        a = reset_table_gostosa()
+        if(a == True):
+            await ctx.send('Resetada a tabela')
+        else:
+            await ctx.send('Erro')
+
+    @commands.command()
+    @Checks.is_owner()
+    async def add_ponto_gostosa(self,ctx, id_user: int, pontuacao: int):
+        if busca_gostosa(id_user):
+            update_gostosa(id_user,pontuacao)
+            await ctx.send('Adicionando')
+        else:
+            insert_gostosa(id_user,pontuacao)
+            await ctx.send('Adicionando')
+
+    @commands.command()
+    @Checks.is_owner()
+    async def remove_gostosa(self,ctx, id_user: int):
+        if busca_gostosa(id_user):
+            delete_gostosa(id_user)
+            await ctx.send('Deletado')
+        else:
+            await ctx.send('Não há registro')
+    
 def setup(bot):
     bot.add_cog(Cyber(bot))

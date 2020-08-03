@@ -538,6 +538,15 @@ def insert_gostosa(id_user,quantidade= 1):
             print(e)
             print('Erro em inserir gostosa')
 
+def delete_gostosa(id_user):
+      try:
+            cursor.execute('''DELETE FROM gostosa WHERE id_user = ?''',(id_user,))
+            db.commit()
+            return True
+      except Exception as e:
+            print(e)
+            return False
+
 def busca_gostosa(id_user):
       cursor.execute('SELECT * FROM gostosa WHERE id_user = ? ;',(id_user,))
       resultado = cursor.fetchone()

@@ -86,5 +86,5 @@ async def c_error(ctx,error):
         if(info == False):
             await delt.delete(delay=delay)
             await ctx.message.delete(delay=delay)
-            if(ctx.command):
+            if(not isinstance(error, commands.CommandOnCooldown)):
                 ctx.command.reset_cooldown(ctx)
