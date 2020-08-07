@@ -1,3 +1,4 @@
+import asyncio
 import discord
 from discord.ext import commands
 
@@ -332,7 +333,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
     usage='?alemao',
     description='Baiano nazista.',
     brief='?alemao')
-    #@Checks.is_Cyber()
+    @Checks.is_Cyber()
     @commands.cooldown(1,30, commands.BucketType.guild)
     async def alemao(self,ctx):
         await ctx.send('!t-img baiano nazista')
@@ -348,7 +349,6 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                 await ctx.send('<@207294581266579457> você ae.')
             except asyncio.TimeoutError:
                 break
-
         
     @commands.command()
     @Checks.is_owner()
