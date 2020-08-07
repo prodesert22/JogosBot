@@ -328,6 +328,28 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
     async def espadinha(self,ctx):
         await ctx.send('Playlist espadinha, a melhor do brasil!\nhttps://open.spotify.com/playlist/0YLqTiBdJD7y97aifvByCZ?si=v4iWABFWR6Sl2otDCE-ttw')
 
+    @commands.command(name='alemao',
+    usage='?alemao',
+    description='Baiano nazista.',
+    brief='?alemao')
+    #@Checks.is_Cyber()
+    @commands.cooldown(1,30, commands.BucketType.guild)
+    async def alemao(self,ctx):
+        await ctx.send('!t-img baiano nazista')
+        def check(message):
+            if(message.author.id == 595374017406566400 and message.embeds is not None):
+                if(message.embeds[0].description.startswith('baiano nazista')):
+                    return True
+            return False
+        m = None
+        while(m is None):
+            try:
+                m == await self.bot.wait_for('message', check=check, timeout=10)
+                await ctx.send('<@207294581266579457> você ae.')
+            except asyncio.TimeoutError:
+                break
+
+        
     @commands.command()
     @Checks.is_owner()
     async def reset_gostosa(self,ctx):
