@@ -169,27 +169,56 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
     usage='?topburro',
     description='Mostra as pessoas que mais foram burras.',
     brief='?topburro')
-    @Checks.is_Cyber()
+    #@Checks.is_Cyber()
     @commands.cooldown(1,10, commands.BucketType.channel)
     async def topburro(self,ctx):
         try:
             lista_burros = busca_top_burros()
+            pags_burro = list()
             if(lista_burros):
-                menssagem = '```Os mais burros dos server são:\n'
-                contador = 0
+                lista_burro_server =list()
                 for burro in lista_burros:
-                    str_burro = ''
-                    id_user = burro.get_id()
-                    if(ctx.guild.get_member(id_user) is not None):
-                        quantidade = burro.get_qtd()
-                        membro = ctx.guild.get_member(id_user)
-                        str_burro = '[{}] {} foi burro {} vezes'.format(contador+1,membro.name,quantidade)
-                        menssagem += '{}\n'.format(str_burro)
-                        contador += 1
-                    if(contador == 10):
+                    if(ctx.guild.get_member(burro.get_id()) is not None):
+                        lista_burro_server.append(burro)
+                    else:
+                        continue
+
+                print('Correta',len(lista_burro_server))
+                emb_pag = discord.Embed(
+                    title='Lista de burros do server'
+                )
+                cont = 0
+                for num in range(len(lista_burro_server)):
+                    cont += 1
+                    membro = ctx.guild.get_member(lista_burro_server[num].get_id())
+                    emb_pag.add_field(name='[{}] {} foi burro {} vezes'.format(cont,membro.name,lista_burro_server[num].get_qtd()),value='** **',inline=False)
+                    if ((cont % 10 == 0) or (cont == len(lista_burro_server))) :
+                        pags_burro.append(emb_pag)
+                        emb_pag = discord.Embed(
+                            title='Lista de burros do server'
+                        )
+                id_pag = 0
+                menssagem = await ctx.send(embed=pags_burro[id_pag])
+                await menssagem.add_reaction('⬅️')
+                await menssagem.add_reaction('➡️')
+                sair = False
+                while sair == False:
+                    def check(reaction, user):
+                        return reaction.message.id == menssagem.id and (str(reaction.emoji) == '⬅️' or str(reaction.emoji) == '➡️') and not user.bot == True
+                    try:
+                        r = await self.bot.wait_for('reaction_add', check=check, timeout=10)
+                        if(str(r[0].emoji) == '⬅️' and not id_pag == 0):
+                            id_pag -= 1
+                            emb = pags_burro[id_pag]
+                            await menssagem.remove_reaction('⬅️',ctx.message.author)
+                            await menssagem.edit(embed=emb)
+                        if(str(r[0].emoji) == '➡️' and not id_pag == len(pags_burro)-1):
+                            id_pag += 1
+                            emb = pags_burro[id_pag]
+                            await menssagem.remove_reaction('➡️',ctx.message.author)
+                            await menssagem.edit(embed=emb)
+                    except asyncio.TimeoutError:
                         break
-                menssagem += '\n```'
-            await ctx.send(menssagem)
         except Exception as e:
             print(e)
 
