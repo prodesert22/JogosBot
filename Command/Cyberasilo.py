@@ -188,6 +188,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                     title='Lista de burros do server'
                 )
                 cont = 0
+                cont_pag = 1
                 for num in range(len(lista_burro_server)):
                     cont += 1
                     membro = ctx.guild.get_member(lista_burro_server[num].get_id())
@@ -197,6 +198,8 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                         emb_pag = discord.Embed(
                             title='Lista de burros do server'
                         )
+                for num in range(len(pags_burro)):
+                    pags_burro[num].set_footer(text='{}/{}'.format(num+1,len(pags_burro)))
                 id_pag = 0
                 menssagem = await ctx.send(embed=pags_burro[id_pag])
                 await menssagem.add_reaction('⬅️')
@@ -218,7 +221,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                             await menssagem.remove_reaction('➡️',ctx.message.author)
                             await menssagem.edit(embed=emb)
                     except asyncio.TimeoutError:
-                        break
+                        sair = True
         except Exception as e:
             print(e)
 
@@ -290,21 +293,18 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
         try:
             lista_gostosas = busca_top_gostosas()
             if(lista_gostosas):
-                menssagem = '```As mais gostosas dos server são:\n'
-                contador = 0
+                emb = discord.Embed(
+                    title='As mais gostosas dos server são:'
+                )
+                cont = 1
                 for gostosa in lista_gostosas:
-                    str_gostosa = ''
                     id_user = gostosa.get_id()
                     if(ctx.guild.get_member(id_user) is not None):
                         quantidade = gostosa.get_qtd()
                         membro = ctx.guild.get_member(id_user)
-                        str_gostosa = '[{}] {} é gostosa {} vezes'.format(contador+1,membro.name,quantidade)
-                        menssagem += '{}\n'.format(str_gostosa)
-                        contador += 1
-                    if(contador == 10):
-                        break
-                menssagem += '\n```'
-                await ctx.send(menssagem)
+                        emb.add_field(name='[{}] {} foi burro {} vezes'.format(cont,membro.name,quantidade),value='** **',inline=False)
+                        cont += 1
+                await ctx.send(embed=emb)
             else:
                 await ctx.send('Não há registros de gostosas no server')
         except Exception as e:
