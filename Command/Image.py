@@ -9,7 +9,7 @@ reload(Functions.Fun_image)
 
 from Functions.Fun_image import Error_image
 from Functions.Fun_image import get_image,download_image,verifica_url
-from Functions.Fun_image import func_magik,func_burn,func_haah,func_hooh,func_waaw,func_woow,func_spin,func_ancap,func_gay,func_gaben,func_logan,func_nazi,func_rotate,func_trump,func_ussr
+from Functions.Fun_image import func_magik,func_burn,func_haah,func_hooh,func_waaw,func_woow,func_spin,func_ancap,func_gay,func_gaben,func_logan,func_nazi,func_rotate,func_trump,func_ussr,func_minifurra
 
 class Image(commands.Cog,name= "Edição de imagem"):
     def __init__ (self,bot):
@@ -551,6 +551,20 @@ class Image(commands.Cog,name= "Edição de imagem"):
                     await ctx.send(embed=embed)
             else:
                 await ctx.send('Erro, url inválida.')
+
+    @commands.command(name='minifurra', 
+    usage='?minifurra <texto>',
+    description='Usado gerar uma frase com a foto da minifurra.',
+    brief='?minifurra <texto>')
+    @commands.cooldown(1,10, commands.BucketType.user)
+    async def minifurra(self,ctx,*,texto ):
+        max_caracter = 100
+        if len(texto) <= max_caracter:
+            image = func_minifurra(texto)
+            file = discord.File(fp=image,filename=f'frase_minifurra.png')
+            await ctx.send(file=file)
+        else:
+            await ctx.send('O texto excedeu {} caracteres.'.format(max_caracter))
 
 def setup(bot):
     bot.add_cog(Image(bot))

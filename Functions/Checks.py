@@ -11,6 +11,7 @@ class No_Perms(commands.CommandError): pass
 class No_Guild(commands.CommandError): pass
 class No_Guild_Owner(commands.CommandError): pass
 class No_Cyber(commands.CommandError): pass
+class No_Guild_Owner_Bot(commands.CommandError): pass
 
 owner_id = 236844195782983680
 
@@ -26,6 +27,13 @@ def is_owner_server():
         if ctx.author.id == ctx.guild.owner_id:
             return True
         raise No_Guild_Owner
+    return commands.check(predicate)
+
+def is_owner_server_or_bot():
+    def predicate(ctx):
+        if ctx.author.id == ctx.guild.owner_id or ctx.author.id == 236844195782983680: 
+            return True
+        raise No_Guild_Owner_Bot
     return commands.check(predicate)
 
 def is_Cyber():
@@ -61,7 +69,7 @@ async def c_error(ctx,error):
         pass
     elif isinstance(error, No_Guild):
         pass
-    elif isinstance(error, No_Owner):
+    elif isinstance(error, No_Owner) or isinstance(error, No_Guild_Owner_Bot) :
         mensagem = "Permissão negada."
         delay = 2
     elif isinstance(error, No_Guild_Owner):

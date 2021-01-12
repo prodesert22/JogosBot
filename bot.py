@@ -2,6 +2,8 @@ import asyncio
 import discord
 import os
 
+intents = discord.Intents.all()
+
 from discord.ext import commands
 
 from Functions.banco import busca_prefix,insert_prefix
@@ -22,7 +24,7 @@ async def get_prefix(bot, message):
     else:
         return DEFAULT_PREFIX
 
-bot = commands.Bot(case_insensitive=True, command_prefix = get_prefix)
+bot = commands.Bot(case_insensitive=True, command_prefix = get_prefix, intents=intents)
 bot.remove_command('help')
 
 @bot.check

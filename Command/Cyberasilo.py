@@ -1,3 +1,4 @@
+import asyncio
 import discord
 from discord.ext import commands
 
@@ -13,7 +14,7 @@ from Functions import Checks
 from Functions.banco import busca_gostosa,update_gostosa,insert_gostosa,busca_top_gostosas,reset_table_gostosa,delete_gostosa
 from Functions.banco import busca_burrice,update_burrice,insert_burrice,busca_top_burros
 
-antifurro = [236844195782983680,293360838461620225,207294581266579457,281146568428486656,297129936156884992,258070435462119425]
+antifurro = [236844195782983680,293360838461620225,207294581266579457,281146568428486656,297129936156884992,258070435462119425,462395855899590666,383821379016851457]
 
 def is_antifurro(ctx):
     if(ctx.author.id in antifurro):
@@ -168,29 +169,82 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
     usage='?topburro',
     description='Mostra as pessoas que mais foram burras.',
     brief='?topburro')
-    @Checks.is_Cyber()
+    #@Checks.is_Cyber()
     @commands.cooldown(1,10, commands.BucketType.channel)
     async def topburro(self,ctx):
         try:
             lista_burros = busca_top_burros()
+            pags_burro = list()
             if(lista_burros):
-                menssagem = '```Os mais burros dos server são:\n'
-                contador = 0
+                lista_burro_server =list()
                 for burro in lista_burros:
-                    str_burro = ''
-                    id_user = burro.get_id()
-                    if(ctx.guild.get_member(id_user) is not None):
-                        quantidade = burro.get_qtd()
-                        membro = ctx.guild.get_member(id_user)
-                        str_burro = '[{}] {} foi burro {} vezes'.format(contador+1,membro.name,quantidade)
-                        menssagem += '{}\n'.format(str_burro)
-                        contador += 1
-                    if(contador == 10):
-                        break
-                menssagem += '\n```'
-            await ctx.send(menssagem)
+                    if(ctx.guild.get_member(burro.get_id()) is not None):
+                        lista_burro_server.append(burro)
+                    else:
+                        continue
+
+                print('Correta',len(lista_burro_server))
+                emb_pag = discord.Embed(
+                    title='Lista de burros do server'
+                )
+                cont = 0
+                cont_pag = 1
+                for num in range(len(lista_burro_server)):
+                    cont += 1
+                    membro = ctx.guild.get_member(lista_burro_server[num].get_id())
+                    emb_pag.add_field(name='[{}] {} foi burro {} vezes'.format(cont,membro.name,lista_burro_server[num].get_qtd()),value='** **',inline=False)
+                    if ((cont % 10 == 0) or (cont == len(lista_burro_server))) :
+                        pags_burro.append(emb_pag)
+                        emb_pag = discord.Embed(
+                            title='Lista de burros do server'
+                        )
+                for num in range(len(pags_burro)):
+                    pags_burro[num].set_footer(text='{}/{}'.format(num+1,len(pags_burro)))
+                id_pag = 0
+                menssagem = await ctx.send(embed=pags_burro[id_pag])
+                await menssagem.add_reaction('⬅️')
+                await menssagem.add_reaction('➡️')
+                sair = False
+                while sair == False:
+                    def check(reaction, user):
+                        return reaction.message.id == menssagem.id and (str(reaction.emoji) == '⬅️' or str(reaction.emoji) == '➡️') and not user.bot == True
+                    try:
+                        r = await self.bot.wait_for('reaction_add', check=check, timeout=10)
+                        if(str(r[0].emoji) == '⬅️' and not id_pag == 0):
+                            id_pag -= 1
+                            emb = pags_burro[id_pag]
+                            await menssagem.remove_reaction('⬅️',ctx.message.author)
+                            await menssagem.edit(embed=emb)
+                        if(str(r[0].emoji) == '➡️' and not id_pag == len(pags_burro)-1):
+                            id_pag += 1
+                            emb = pags_burro[id_pag]
+                            await menssagem.remove_reaction('➡️',ctx.message.author)
+                            await menssagem.edit(embed=emb)
+                    except asyncio.TimeoutError:
+                        sair = True
         except Exception as e:
             print(e)
+
+    @commands.command(name='setburro',
+    usage='?setburro',
+    description='Só para o dono do server.',
+    brief='?setburro')
+    #@Checks.is_Cyber()
+    @Checks.is_owner_server_or_bot()
+    @commands.cooldown(1,10, commands.BucketType.channel)
+    async def setburro(self,ctx):
+        if(ctx.message.mentions is not None):
+            burro = ctx.message.mentions[0]
+            if(ctx.guild.id == 223594824681521152):
+                role = discord.utils.get(ctx.guild.roles, name="Burro")
+                membros = ctx.message.guild.members
+                for m in membros:
+                        if(role in m.roles):
+                            await m.remove_roles(role)
+                await burro.add_roles(role)
+            await ctx.send("Burro do server é <@{}>".format(burro.id))
+        else:
+            await ctx.send('Marque alguem para ser o burro')
 
     @commands.command(name='gostosa',
     usage='?gostosa',
@@ -239,21 +293,18 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
         try:
             lista_gostosas = busca_top_gostosas()
             if(lista_gostosas):
-                menssagem = '```As mais gostosas dos server são:\n'
-                contador = 0
+                emb = discord.Embed(
+                    title='As mais gostosas dos server são:'
+                )
+                cont = 1
                 for gostosa in lista_gostosas:
-                    str_gostosa = ''
                     id_user = gostosa.get_id()
                     if(ctx.guild.get_member(id_user) is not None):
                         quantidade = gostosa.get_qtd()
                         membro = ctx.guild.get_member(id_user)
-                        str_gostosa = '[{}] {} é gostosa {} vezes'.format(contador+1,membro.name,quantidade)
-                        menssagem += '{}\n'.format(str_gostosa)
-                        contador += 1
-                    if(contador == 10):
-                        break
-                menssagem += '\n```'
-                await ctx.send(menssagem)
+                        emb.add_field(name='[{}] {} é gostosa {} vezes'.format(cont,membro.name,quantidade),value='** **',inline=False)
+                        cont += 1
+                await ctx.send(embed=emb)
             else:
                 await ctx.send('Não há registros de gostosas no server')
         except Exception as e:
@@ -332,7 +383,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
     usage='?alemao',
     description='Baiano nazista.',
     brief='?alemao')
-    #@Checks.is_Cyber()
+    @Checks.is_Cyber()
     @commands.cooldown(1,30, commands.BucketType.guild)
     async def alemao(self,ctx):
         await ctx.send('!t-img baiano nazista')
@@ -347,9 +398,9 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                 m == await self.bot.wait_for('message', check=check, timeout=10)
                 await ctx.send('<@207294581266579457> você ae.')
             except asyncio.TimeoutError:
+                await ctx.send('<@595374017406566400> baiano, acorda ai.')
                 break
 
-        
     @commands.command()
     @Checks.is_owner()
     async def reset_gostosa(self,ctx):

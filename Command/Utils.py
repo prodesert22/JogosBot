@@ -68,21 +68,22 @@ class Utils(commands.Cog,name= "Utilidades"):
     @commands.cooldown(1,10, commands.BucketType.channel)
     async def emoji(self, ctx, emoji:str):
         emote_regex = re.compile(r'<:.*:(?P<id>\d*)>')
+        emote_regex_gif = re.compile(r'<a:.*:(?P<id>\d*)>')
         match = emote_regex.match(emoji)
-        if match:
-            emote = 'https://cdn.discordapp.com/emojis/{}.png'.format(str(match.group('id')))
-            emote_gif = 'https://cdn.discordapp.com/emojis/{}.gif'.format(str(match.group('id')))
-            response_png = requests.get(emote)
+        match_gif = emote_regex_gif.match(emoji)
+        if match_gif:
+            emote_gif = 'https://cdn.discordapp.com/emojis/{}.gif'.format(str(match_gif.group('id')))
             response_gif = requests.get(emote_gif)
+            gif = BytesIO(response_gif.content)
+            file_gif = discord.File(fp=gif,filename='emoji.gif')
+            await ctx.send(file=file_gif)
+        elif match:
+            emote = 'https://cdn.discordapp.com/emojis/{}.png'.format(str(match.group('id')))
+            response_png = requests.get(emote)
             png = BytesIO(response_png.content)
             png.seek(0)
             file_png = discord.File(png,filename='emoji.png')
-            if response_gif.status_code == 200:
-                gif = BytesIO(response_gif.content)
-                file_gif = discord.File(fp=gif,filename='emoji.gif')
-                await ctx.send(files=[file_png,file_gif])
-            else:
-                await ctx.send(file=file_png)
+            await ctx.send(file=file_png)
         else:
             if(emoji.isdigit()):
                 emote = 'https://cdn.discordapp.com/emojis/{}.png'.format(str(emoji))

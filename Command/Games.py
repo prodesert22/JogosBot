@@ -14,6 +14,7 @@ from Functions.banco import busca_user_id
 from Functions.blackjack import blackjack_game
 from Functions.mina import cal_matriz, gerar_texto
 from Functions.slot_machine import maquina
+from Functions.Sokoban import sokoban_game
 
 MINIMO = 50
 
@@ -151,9 +152,14 @@ class Games(commands.Cog,name= "Jogos"):
             await ctx.message.delete(delay=5)
             await delte.delete(delay=5)
 
-    @commands.command()
-    async def teste2(self,ctx):
-        print('teste2')
+    @commands.command(name='sokoban', aliases=['soko'],
+    usage='?sokoban', 
+    description='Jogue Sokoban, empurre todas as caixas nas marcoçẽos para ganhar', 
+    brief='?sokoban')
+    @commands.cooldown(1,30, commands.BucketType.user)
+    async def soko(self,ctx):
+        sokoban_game(ctx,self.bot)
+        
 
 def setup(bot):
     bot.add_cog(Games(bot))

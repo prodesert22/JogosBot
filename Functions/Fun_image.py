@@ -4,7 +4,7 @@ import os
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageOps, ImageSequence
+from PIL import Image, ImageDraw, ImageOps, ImageSequence, ImageFont
 import urllib
 from wand.image import Image as Img_wand
 from wand.display import display
@@ -12,6 +12,8 @@ from wand.display import display
 PATH_ABS = os.path.abspath(r"../JogosBot")
 PATH_DATA = os.path.join(PATH_ABS,"Data")
 PATH_I = os.path.join(PATH_DATA,'Images')
+PATH_F = os.path.join(PATH_DATA,'Fonts')
+PATH_FONT = os.path.join(PATH_F,'whitneysemibold.otf')
 
 class Error_image():
     def __init__(self,message,tipo):
@@ -299,6 +301,35 @@ def func_burn(image):
     response = upload_burn(image)
     img_json = json.loads(response.content)
     return img_json['response']['images']['regular']['url']
+
+def func_minifurra(text):
+    minifurra = Image.open(os.path.join(PATH_I,'minifurra.png'))
+    font = ImageFont.truetype(PATH_FONT,16)
+    lines = []
+    max_width = 208
+    if font.getsize(text)[0] <= max_width:
+        lines.append(text) 
+    else:
+        words = text.split(' ') 
+        i = 0
+        while i < len(words):
+            line = ''         
+            while i < len(words) and font.getsize(line + words[i])[0] <= max_width:                
+                line = line + words[i] + " "
+                i += 1
+            if not line:
+                line = words[i]
+                i += 1
+            lines.append(line)
+    d = ImageDraw.Draw(minifurra)
+    i = 0
+    for l in lines:
+        d.text((20,150+i),l,font=font,fill=(142, 146, 151))
+        i+=17
+    image_binary = BytesIO()
+    minifurra.save(image_binary, format='PNG')
+    image_binary.seek(0)
+    return image_binary
 
 # imagem = download_image('https://media.discordapp.net/attachments/506963931705638915/721565940264992848/magik.png')
 # func_spin(imagem)
