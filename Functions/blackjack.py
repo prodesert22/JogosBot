@@ -246,7 +246,7 @@ async def blackjack_game(ctx,bot,credito):
         await message.add_reaction('🇶')
         while True:
             def check(reaction, user):
-                return reaction.message.id == message.id and (str(reaction.emoji) == '🇭' or str(reaction.emoji) == '🇸' or str(reaction.emoji) == '🇶') and not user.bot == True
+                return reaction.message.id == message.id and (str(reaction.emoji) == '🇭' or str(reaction.emoji) == '🇸' or str(reaction.emoji) == '🇶') and not user.bot == True and user.id == ctx.message.author.id
             try:
                 r = await bot.wait_for('reaction_add', check=check, timeout=10)
             except asyncio.TimeoutError:
@@ -269,6 +269,7 @@ async def blackjack_game(ctx,bot,credito):
                     emb2 = saldo(result,ctx.message.author.id,credito)
                     await message.edit(embed=emb)
                     await ctx.send(embed=emb2)
+                    await message.clear_reactions()
                     break
             elif(str(r[0].emoji) == '🇸'):
                 if(total(dealer_hand) <= total(player_hand)):

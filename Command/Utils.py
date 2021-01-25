@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-#import cairosvg
+import cairosvg
 import datetime
 import math
 import os
