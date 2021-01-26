@@ -11,7 +11,7 @@ from io import BytesIO
 
 from Functions import Checks
 
-from Functions.banco import busca_gostosa,update_gostosa,insert_gostosa,busca_top_gostosas,reset_table_gostosa,delete_gostosa
+from Functions.banco import busca_gostosa,update_gostosa,insert_gostosa,busca_top_gostosas
 from Functions.banco import busca_burrice,update_burrice,insert_burrice,busca_top_burros
 
 antifurro = [236844195782983680,293360838461620225,207294581266579457,281146568428486656,297129936156884992,258070435462119425,462395855899590666,383821379016851457]
@@ -183,7 +183,6 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                     else:
                         continue
 
-                print('Correta',len(lista_burro_server))
                 emb_pag = discord.Embed(
                     title='Lista de burros do server'
                 )
@@ -224,27 +223,6 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                         sair = True
         except Exception as e:
             print(e)
-
-    @commands.command(name='setburro',
-    usage='?setburro',
-    description='Só para o dono do server.',
-    brief='?setburro')
-    #@Checks.is_Cyber()
-    @Checks.is_owner_server_or_bot()
-    @commands.cooldown(1,10, commands.BucketType.channel)
-    async def setburro(self,ctx):
-        if(ctx.message.mentions is not None):
-            burro = ctx.message.mentions[0]
-            if(ctx.guild.id == 223594824681521152):
-                role = discord.utils.get(ctx.guild.roles, name="Burro")
-                membros = ctx.message.guild.members
-                for m in membros:
-                        if(role in m.roles):
-                            await m.remove_roles(role)
-                await burro.add_roles(role)
-            await ctx.send("Burro do server é <@{}>".format(burro.id))
-        else:
-            await ctx.send('Marque alguem para ser o burro')
 
     @commands.command(name='gostosa',
     usage='?gostosa',
@@ -400,34 +378,6 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             except asyncio.TimeoutError:
                 await ctx.send('<@595374017406566400> baiano, acorda ai.')
                 break
-
-    @commands.command()
-    @Checks.is_owner()
-    async def reset_gostosa(self,ctx):
-        a = reset_table_gostosa()
-        if(a == True):
-            await ctx.send('Resetada a tabela')
-        else:
-            await ctx.send('Erro')
-
-    @commands.command()
-    @Checks.is_owner()
-    async def add_ponto_gostosa(self,ctx, id_user: int, pontuacao: int):
-        if busca_gostosa(id_user):
-            update_gostosa(id_user,pontuacao)
-            await ctx.send('Adicionando')
-        else:
-            insert_gostosa(id_user,pontuacao)
-            await ctx.send('Adicionando')
-
-    @commands.command()
-    @Checks.is_owner()
-    async def remove_gostosa(self,ctx, id_user: int):
-        if busca_gostosa(id_user):
-            delete_gostosa(id_user)
-            await ctx.send('Deletado')
-        else:
-            await ctx.send('Não há registro')
     
 def setup(bot):
     bot.add_cog(Cyber(bot))

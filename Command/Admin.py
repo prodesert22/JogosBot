@@ -49,5 +49,26 @@ class Admin(commands.Cog,name= "Comandos para Admins"):
             await ctx.send('Erro, exedeu o máximo de 3 caracteres permitidos.')
             ctx.command.reset_cooldown(ctx)
 
+    @commands.command(name='setburro',
+    usage='?setburro',
+    description='Só para o dono do server.',
+    brief='?setburro')
+    @Checks.is_Cyber()
+    @Checks.is_owner_server_or_bot()
+    @commands.cooldown(1,10, commands.BucketType.channel)
+    async def setburro(self,ctx):
+        if(ctx.message.mentions is not None):
+            burro = ctx.message.mentions[0]
+            if(ctx.guild.id == 223594824681521152):
+                role = discord.utils.get(ctx.guild.roles, name="Burro")
+                membros = ctx.message.guild.members
+                for m in membros:
+                        if(role in m.roles):
+                            await m.remove_roles(role)
+                await burro.add_roles(role)
+            await ctx.send("Burro do server é <@{}>".format(burro.id))
+        else:
+            await ctx.send('Marque alguem para ser o burro')
+
 def setup(bot):
     bot.add_cog(Admin(bot))
