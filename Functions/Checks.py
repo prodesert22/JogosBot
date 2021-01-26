@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 import math
+import re
 
 from Command.Help import help_command
 
@@ -12,6 +13,72 @@ class No_Guild(commands.CommandError): pass
 class No_Guild_Owner(commands.CommandError): pass
 class No_Cyber(commands.CommandError): pass
 class No_Guild_Owner_Bot(commands.CommandError): pass
+
+class Membro_nao_encontrado(commands.BadArgument):
+    def __init__(self, argument):
+        self.argument = argument
+        super().__init__(' "{}" não encontrado.'.format(argument))
+
+class Busca_User(commands.IDConverter):
+
+    async def query_member_named(self, guild, argument):
+        cache = guild._state.member_cache_flags.joined
+        if len(argument) > 5 and argument[-5] == '#':
+            username, _, discriminator = argument.rpartition('#')
+            members = await guild.query_members(username, limit=100, cache=cache)
+            return discord.utils.get(members, name=username, discriminator=discriminator)
+        else:
+            members = await guild.query_members(argument, limit=100, cache=cache)
+            if members and len(members) > 0:
+                return members[0]
+            else:
+                return None
+
+    async def query_member_by_id(self, bot, guild, user_id):
+        ws = bot._get_websocket(shard_id=guild.shard_id)
+        cache = guild._state.member_cache_flags.joined
+        if ws.is_ratelimited():
+            # If we're being rate limited on the WS, then fall back to using the HTTP API
+            # So we don't have to wait ~60 seconds for the query to finish
+            try:
+                member = await guild.fetch_member(user_id)
+            except discord.HTTPException:
+                return None
+
+            if cache:
+                guild._add_member(member)
+            return member
+
+        # If we're not being rate limited then we can use the websocket to actually query
+        members = await guild.query_members(limit=1, user_ids=[user_id], cache=cache)
+        if not members:
+            return None
+        return members[0]
+
+    async def convert(self, ctx, argument):
+        bot = ctx.bot
+        match = self._get_id_match(argument) or re.match(r'<@!?([0-9]+)>$', argument)
+        guild = ctx.guild
+        result = None
+        user_id = None
+        if match is None:
+            # not a mention...
+            result = guild.get_member_named(argument)
+        else:
+            user_id = int(match.group(1))
+            result = guild.get_member(user_id) or discord.utils.get(ctx.message.mentions, id=user_id)
+        if result is None:
+            if guild is None:
+                raise Membro_nao_encontrado(argument)
+            if user_id is not None:
+                result = await self.query_member_by_id(bot, guild, user_id)
+            else:
+                result = await self.query_member_named(guild, argument)
+
+            if not result:
+                raise Membro_nao_encontrado(argument)
+
+        return result
 
 owner_id = 236844195782983680
 

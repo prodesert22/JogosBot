@@ -11,6 +11,9 @@ import unicodedata
 import typing
 import wand
 
+import Functions.Checks
+from Functions import Checks
+
 from io import BytesIO
 
 PATH_ABS = os.path.abspath(r"../JogosBot")
@@ -45,13 +48,14 @@ class Utils(commands.Cog,name= "Utilidades"):
         ms = (tempo2-tempo1)*1000
         menssagem = 'Pong! Latência: {}ms'.format(math.trunc(ms))
         await msg.edit(content=menssagem)
-
+            
     @commands.command(name='avatar', aliases=['profile'], 
     usage='?avatar <user>: Opcional',
     description='Busca a imagem do usuario.',
     brief='?avatar @john \n?avatar john \n?avatar 534535235386192929 1000')
     @commands.cooldown(1,10, commands.BucketType.user)
-    async def avatar(self, ctx, Member:typing.Optional[commands.MemberConverter] = None):
+    async def avatar(self, ctx, Member: Checks.Busca_User):
+        print(Member)
         if Member:
             embed=discord.Embed(title=f"Imagem de perfil de {Member.name}.")
             embed.set_image(url=Member.avatar_url)
