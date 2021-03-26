@@ -4,11 +4,13 @@ from discord.ext import commands
 import Functions.blackjack
 import Functions.mina
 import Functions.slot_machine
+import Functions.Sokoban
 
 from importlib import reload
 reload(Functions.blackjack)
 reload(Functions.mina)
 reload(Functions.slot_machine)
+reload(Functions.Sokoban)
 
 from Functions.banco import busca_user_id
 from Functions.blackjack import blackjack_game
@@ -50,7 +52,7 @@ class Games(commands.Cog,name= "Jogos"):
         self.emoji = '🎮'
         self.hidden = False
         self.admin = False
-
+        
     def get_emoji(self):
         return self.emoji
 
@@ -158,8 +160,15 @@ class Games(commands.Cog,name= "Jogos"):
     brief='?sokoban')
     @commands.cooldown(1,30, commands.BucketType.user)
     async def soko(self,ctx):
-        sokoban_game(ctx,self.bot)
+        message = await ctx.send('Carregando o nivel <a:loading:803617428801585162>')
+        level = 1
+        ganhou = await sokoban_game(ctx,message,self.bot,level)
+        if(ganhou is True):
+            for i in range(2,5):
+                await message.edit(content='Carregando novo nivel <a:loading:803617428801585162>')
+                ganhou = await sokoban_game(ctx,message,self.bot,i)
+                if(ganhou is False):
+                    break
         
-
 def setup(bot):
     bot.add_cog(Games(bot))

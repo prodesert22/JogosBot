@@ -171,7 +171,7 @@ def format_l_to_s(l):
 
 def bj_quit(ctx,descricao):
     emb = discord.Embed(
-        title = "Fim de o jogo",
+        title = "Fim de jogo",
         description = descricao,
         colour = discord.Colour.blue()
     )

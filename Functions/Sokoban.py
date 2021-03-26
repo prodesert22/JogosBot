@@ -42,9 +42,8 @@ class Local(Pos):
     def __init__(self, x, y):
         super().__init__(x, y)
 
-async def sokoban_game(ctx,bot):
-    level = 1
-    message = await ctx.send('Carregando o nivel <a:loading:803617428801585162>')
+async def sokoban_game(ctx,message,bot,level):
+    ganhou = False
     m, player, caixas, locais = calc_matriz(level)
     m_inicial = m.copy()
     p_inicial = copy.copy(player)
@@ -56,6 +55,8 @@ async def sokoban_game(ctx,bot):
         \n⬆️ ir para baixo \n⬇️ ir para baixo \n🔄 para reinicar o nivel\n🇶 Para sair",
         colour = discord.Colour.green()
     )
+    movimentos = 40
+    emb.add_field(name='Movimentos restantes', value=movimentos, inline=True)
     await message.add_reaction('⬅️')
     await message.add_reaction('➡️')
     await message.add_reaction('⬆️')
@@ -115,6 +116,8 @@ async def sokoban_game(ctx,bot):
                         else:
                             m[player.get_y(),player.get_x()+1] = 3
                         texto = formata_matriz(m,level)
+                        movimentos -= 1
+                        emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                         await message.edit(content=texto,embed=emb)
                     else:
                         continue
@@ -127,6 +130,8 @@ async def sokoban_game(ctx,bot):
                     else:
                         m[player.get_y(),player.get_x()+1] = 3
                     texto = formata_matriz(m,level)
+                    movimentos -= 1
+                    emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                     await message.edit(content=texto,embed=emb)
         elif(str(r[0].emoji) == '➡️'):
             print('movimento direita')
@@ -150,6 +155,8 @@ async def sokoban_game(ctx,bot):
                         else:
                             m[player.get_y(),player.get_x()-1] = 3
                         texto = formata_matriz(m,level)
+                        movimentos -= 1
+                        emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                         await message.edit(content=texto,embed=emb)
                     else:
                         continue           
@@ -164,6 +171,8 @@ async def sokoban_game(ctx,bot):
                     for c in caixas:
                         print('Caixa {} x {}y'.format(c.get_x(),c.get_y()))   
                     texto = formata_matriz(m,level)
+                    movimentos -= 1
+                    emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                     await message.edit(content=texto,embed=emb)
         elif(str(r[0].emoji) == '⬆️'):
             print('movimento cima')
@@ -187,6 +196,8 @@ async def sokoban_game(ctx,bot):
                         else:
                             m[player.get_y()+1,player.get_x()] = 3
                         texto = formata_matriz(m,level)
+                        movimentos -= 1
+                        emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                         await message.edit(content=texto,embed=emb)
                     else:
                         continue     
@@ -198,8 +209,9 @@ async def sokoban_game(ctx,bot):
                         m[player.get_y()+1,player.get_x()] = 0
                     else:
                         m[player.get_y()+1,player.get_x()] = 3
-                    
                     texto = formata_matriz(m,level)
+                    movimentos -= 1
+                    emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                     await message.edit(content=texto,embed=emb)
         elif(str(r[0].emoji) == '⬇️'):
             print('movimento baixo')
@@ -223,6 +235,8 @@ async def sokoban_game(ctx,bot):
                         else:
                             m[player.get_y()-1,player.get_x()] = 3
                         texto = formata_matriz(m,level)
+                        movimentos -= 1
+                        emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                         await message.edit(content=texto,embed=emb)
                     else:
                         continue                 
@@ -236,6 +250,8 @@ async def sokoban_game(ctx,bot):
                     else:
                         m[player.get_y()-1,player.get_x()] = 3
                     texto = formata_matriz(m,level)
+                    movimentos -= 1
+                    emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                     await message.edit(content=texto,embed=emb)
         elif(str(r[0].emoji) == '🔄'):
             #Reinicia o level
@@ -243,8 +259,10 @@ async def sokoban_game(ctx,bot):
             caixas = c_inicial.copy()
             locais = l_inicial.copy()
             player = copy.copy(p_inicial)
+            movimentos = 40
+            emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
             await message.remove_reaction('🔄',ctx.message.author)
-            await message.edit(content=formata_matriz(m_inicial,level))
+            await message.edit(content=formata_matriz(m_inicial,level),embed=emb)
         elif(str(r[0].emoji) == '🇶'):
             emb = discord.Embed(
                 title = "Fim de jogo",
@@ -261,7 +279,16 @@ async def sokoban_game(ctx,bot):
             print('Caixa {} x {}y'.format(c.get_x(),c.get_y()))
         for l in locais:
             print('Locais {} x {}y'.format(l.get_x(),l.get_y()))
-        if(verifca_ganhou(caixas,locais)):
+        if(movimentos == 0):
+            emb = discord.Embed(
+                title = "Fim de jogo",
+                description = 'Você perdeu, excedeu o limite de movimentos.',
+                colour = discord.Colour.blue()
+            )
+            await message.clear_reactions()
+            await message.edit(content=' ',embed=emb)
+            break
+        if(verifica_ganhou(caixas,locais,level)):
             emb = discord.Embed(
                 title = "Fim de jogo",
                 description = 'Você ganhou.',
@@ -269,14 +296,15 @@ async def sokoban_game(ctx,bot):
             )
             await message.clear_reactions()
             await message.edit(content=' ',embed=emb)
+            ganhou = True
             break
         else:
             continue
         print('-----------------')
         print('\n \n')
-    return 0
+    return ganhou
 
-def verifca_ganhou(caixas,locais):
+def verifica_ganhou(caixas,locais,level):
     certos = 0
     for c in caixas:
         for l in locais:
@@ -285,7 +313,7 @@ def verifca_ganhou(caixas,locais):
             else:
                 continue
     print('Certos ',certos)
-    return certos == 3
+    return certos == level
 
 def find(predicate,seq):
     for index, element in enumerate(seq):
