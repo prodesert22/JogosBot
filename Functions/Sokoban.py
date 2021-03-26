@@ -279,15 +279,6 @@ async def sokoban_game(ctx,message,bot,level):
             print('Caixa {} x {}y'.format(c.get_x(),c.get_y()))
         for l in locais:
             print('Locais {} x {}y'.format(l.get_x(),l.get_y()))
-        if(movimentos == 0):
-            emb = discord.Embed(
-                title = "Fim de jogo",
-                description = 'Você perdeu, excedeu o limite de movimentos.',
-                colour = discord.Colour.blue()
-            )
-            await message.clear_reactions()
-            await message.edit(content=' ',embed=emb)
-            break
         if(verifica_ganhou(caixas,locais,level)):
             emb = discord.Embed(
                 title = "Fim de jogo",
@@ -297,6 +288,15 @@ async def sokoban_game(ctx,message,bot,level):
             await message.clear_reactions()
             await message.edit(content=' ',embed=emb)
             ganhou = True
+            break
+        elif(movimentos == 0):
+            emb = discord.Embed(
+                title = "Fim de jogo",
+                description = 'Você perdeu, excedeu o limite de movimentos.',
+                colour = discord.Colour.blue()
+            )
+            await message.clear_reactions()
+            await message.edit(content=' ',embed=emb)
             break
         else:
             continue
