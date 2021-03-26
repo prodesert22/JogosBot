@@ -84,7 +84,7 @@ owner_id = 236844195782983680
 
 def is_owner():
     def predicate(ctx):
-        if ctx.author.id == 236844195782983680:
+        if ctx.author.id == owner_id:
             return True
         raise No_Owner()
     return commands.check(predicate)
