@@ -49,6 +49,19 @@ class Admin(commands.Cog,name= "Comandos para Admins"):
             await ctx.send('Erro, exedeu o máximo de 3 caracteres permitidos.')
             ctx.command.reset_cooldown(ctx)
 
+    @commands.command(name='addburro',
+    usage='?addburro',
+    description='Só para o dono do server.',
+    brief='?addburro')
+    @Checks.is_Cyber()
+    @Checks.is_owner_server_or_bot()
+    @commands.cooldown(1,10, commands.BucketType.channel)
+    async def addburro(self, ctx, Member: Checks.Busca_User):
+        if Member:
+            role = discord.utils.get(ctx.guild.roles, name="Burro")
+            await Member.add_roles(role)
+            await ctx.send('Foi Adicionado.')
+
     @commands.command(name='setburro',
     usage='?setburro',
     description='Só para o dono do server.',
