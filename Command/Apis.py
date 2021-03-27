@@ -194,7 +194,7 @@ class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
                 description = crypto.simbolo,
                 colour = discord.Colour.blue()
             )
-            emb.add_field(name='Preco',value='{0:.2f}'.format(crypto.get_preco))
+            emb.add_field(name='Preco :dollar:',value='$ {0:.2f}'.format(crypto.get_preco))
             emb.add_field(name='Site',value=crypto.get_site)
             emb.set_thumbnail(url=crypto.get_logo)
             await ctx.send(embed=emb)

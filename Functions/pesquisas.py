@@ -147,10 +147,10 @@ def busca_crypto(simbolo):
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/info'
     url2 = ' https://pro-api.coinmarketcap.com/v1/tools/price-conversion'
     parameters = {
-        'symbol':'AVAX',
+        'symbol': str(simbolo),
     }
     parameters2 = {
-        'symbol':'AVAX',
+        'symbol': str(simbolo),
         'amount':'1'
     }
     headers = {
