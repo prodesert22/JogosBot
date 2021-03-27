@@ -3,6 +3,12 @@ import requests
 import datetime
 import urllib.parse
 
+from tokens import crypto_token
+from Functions.Classes import Crypto
+
+from requests import Request, Session
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+
 def dolar_hoje():
     r = requests.get('https://economia.awesomeapi.com.br/json/USD-BRL')
     if r.status_code == 200:
@@ -136,3 +142,41 @@ def topcorona():
         lista = list()
         lista = sorted(dict_pais, key=lambda k: k['confirmed'], reverse=True)[:5]
     return lista
+
+def busca_crypto(simbolo):
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/info'
+    url2 = ' https://pro-api.coinmarketcap.com/v1/tools/price-conversion'
+    parameters = {
+        'symbol':'AVAX',
+    }
+    parameters2 = {
+        'symbol':'AVAX',
+        'amount':'1'
+    }
+    headers = {
+    'Accepts': 'application/json',
+    'X-CMC_PRO_API_KEY': crypto_token(),
+    }
+    session = Session()
+    session.headers.update(headers)
+    try:
+        response = session.get(url, params=parameters)
+        response2 = session.get(url2, params=parameters2)
+        if response.status_code == 200 or response2.status_code == 200:
+            dict_info = json.loads(response.content)
+            dict_preco = json.loads(response2.content)
+            
+            dict_info = dict_info['data']
+            dict_info = dict_info[simbolo]
+            
+            dict_preco = dict_preco['data']
+            dict_preco = dict_preco['quote']
+            dict_preco = dict_preco['USD']
+            
+            crypto = Crypto(dict_info['name'],simbolo,dict_info['logo'],dict_info['urls']['website'][0],dict_preco['price'])
+            
+            return crypto
+        else:
+            return None
+    except (ConnectionError, Timeout, TooManyRedirects) as e:
+        print(e)

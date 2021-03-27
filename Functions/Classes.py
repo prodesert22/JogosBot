@@ -166,3 +166,31 @@ class Item:
     @property 
     def get_nome(self):
         return self.nome
+
+class Crypto():
+    def __init__(self, nome, simbolo, logo, site, preco):
+        self.nome = nome
+        self.simbolo = simbolo
+        self.logo = logo
+        self.site = site
+        self.preco = preco
+
+    @property 
+    def get_nome(self):
+        return self.nome
+    
+    @property   
+    def get_simbolo(self):
+        return self.simbolo
+    
+    @property 
+    def get_logo(self):
+        return self.logo
+    
+    @property 
+    def get_site(self):
+        return self.site
+    
+    @property 
+    def get_preco(self):
+        return self.preco

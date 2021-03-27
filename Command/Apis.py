@@ -9,7 +9,7 @@ import Functions.pesquisas
 from importlib import reload
 reload(Functions.pesquisas)
 
-from Functions.pesquisas import dolar,euro,dolar_hoje,euro_hoje,libra,libra_hoje,corona,topcorona
+from Functions.pesquisas import dolar,euro,dolar_hoje,euro_hoje,libra,libra_hoje,corona,topcorona,busca_crypto
 
 class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
     def __init__ (self,bot):
@@ -181,5 +181,24 @@ class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
         except Exception as e:
             print(e)
 
+    @commands.command(name='crypto',
+    usage='?crypto <simbolo>',
+    description='Mostra os países que tem mais casos.',
+    brief='?crypto BTC')
+    @commands.cooldown(1,15, commands.BucketType.channel)
+    async def crypto(self, ctx, simbolo: str):
+        crypto = busca_crypto(simbolo.upper())
+        if(crypto):
+            emb = discord.Embed(
+                title = crypto.get_nome,
+                description = crypto.simbolo,
+                colour = discord.Colour.blue()
+            )
+            emb.add_field(name='Preco',value='{0:.2f}'.format(crypto.get_preco))
+            emb.add_field(name='Site',value=crypto.get_site)
+            emb.set_thumbnail(url=crypto.get_logo)
+            await ctx.send(embed=emb)
+        else:
+            await ctx.send('Erro')
 def setup(bot):
     bot.add_cog(Apis(bot))
