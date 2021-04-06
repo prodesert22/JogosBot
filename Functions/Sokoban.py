@@ -68,15 +68,6 @@ async def sokoban_game(ctx,message,bot,level):
     info = levels[l]
     altura = info[0]
     largura = info[1]
-    print('\n \n \n \n')
-    print('novo jogo')
-    print('Player {} x {}y'.format(player.get_x(),player.get_y()))
-    for c in caixas:
-        print('Caixa {} x {}y'.format(c.get_x(),c.get_y()))
-    for l in locais:
-        print('Locais {} x {}y'.format(l.get_x(),l.get_y()))
-    print('-----------------')
-    print('\n \n')
     while True:
         def check(reaction, user):
             return reaction.message.id == message.id and (str(reaction.emoji) == '⬅️' or str(reaction.emoji) == '➡️' or str(reaction.emoji) == '⬆️' or str(reaction.emoji) == '⬇️' or str(reaction.emoji) == '🔄' or str(reaction.emoji) == '🇶')and not user.bot == True and user.id == ctx.message.author.id
@@ -94,7 +85,6 @@ async def sokoban_game(ctx,message,bot,level):
         cima, baixo, esquerda, direita, index_c, index_b, index_e, index_d = tem_caixa_lado(player,caixas)
         local_atual, _ = find(lambda local: local.get_y() == player.get_y() and local.get_x() == player.get_x(), locais)
         if(str(r[0].emoji) == '⬅️'):
-            print('movimento esquerda')
             await message.remove_reaction('⬅️',ctx.message.author)
             #verifica se tem parede
             if(player.get_x()-1 == 0):
@@ -102,7 +92,6 @@ async def sokoban_game(ctx,message,bot,level):
             else:
                 #verifica se tem caixa na esquerda e se ela ta colada na parede ou tem outra caixa
                 if(esquerda is not None):
-                    print('tem caixa esquerda')
                     if(m[esquerda.get_y(),esquerda.get_x()-1] == 0 or m[esquerda.get_y(),esquerda.get_x()-1] == 3):
                         esquerda.set_x(esquerda.get_x()-1)
                         m[esquerda.get_y(),esquerda.get_x()] = 2
@@ -110,7 +99,6 @@ async def sokoban_game(ctx,message,bot,level):
                         caixas.append(esquerda)
                         player.set_x(player.get_x()-1)
                         m[player.get_y(),player.get_x()] = 1
-                        print(local_atual)
                         if(local_atual is None):
                             m[player.get_y(),player.get_x()+1] = 0
                         else:
@@ -122,7 +110,6 @@ async def sokoban_game(ctx,message,bot,level):
                     else:
                         continue
                 else:
-                    print('nao tem caixa esquerda')
                     player.set_x(player.get_x()-1)
                     m[player.get_y(),player.get_x()] = 1
                     if(local_atual is None):
@@ -134,7 +121,6 @@ async def sokoban_game(ctx,message,bot,level):
                     emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                     await message.edit(content=texto,embed=emb)
         elif(str(r[0].emoji) == '➡️'):
-            print('movimento direita')
             await message.remove_reaction('➡️',ctx.message.author)
             #verifica se tem parede
             if(m[player.get_y(),player.get_x()+1] == -1):
@@ -142,7 +128,6 @@ async def sokoban_game(ctx,message,bot,level):
             else:
                 #verifica se tem caixa na direita e se ela ta colada na parede
                 if(direita is not None):
-                    print('tem direita')
                     if(m[direita.get_y(),direita.get_x()+1] == 0 or m[direita.get_y(),direita.get_x()+1] == 3):
                         direita.set_x(direita.get_x()+1)
                         m[direita.get_y(),direita.get_x()] = 2
@@ -161,21 +146,17 @@ async def sokoban_game(ctx,message,bot,level):
                     else:
                         continue           
                 else:
-                    print('nao tem caixa direita')
                     player.set_x(player.get_x()+1)
                     m[player.get_y(),player.get_x()] = 1
                     if(local_atual is None):
                         m[player.get_y(),player.get_x()-1] = 0
                     else:
                         m[player.get_y(),player.get_x()-1] = 3
-                    for c in caixas:
-                        print('Caixa {} x {}y'.format(c.get_x(),c.get_y()))   
                     texto = formata_matriz(m,level)
                     movimentos -= 1
                     emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                     await message.edit(content=texto,embed=emb)
         elif(str(r[0].emoji) == '⬆️'):
-            print('movimento cima')
             await message.remove_reaction('⬆️',ctx.message.author)
             #verifica se tem parede
             if(player.get_y()-1 == 0):
@@ -183,7 +164,6 @@ async def sokoban_game(ctx,message,bot,level):
             else:
                 #verifica se tem caixa em cima e se ela ta colada na parede
                 if(cima is not None):
-                    print('tem cima')
                     if(m[cima.get_y()-1,cima.get_x()] == 0 or m[cima.get_y()-1,cima.get_x()] == 3):
                         cima.set_y(cima.get_y()-1)
                         m[cima.get_y(),cima.get_x()] = 2
@@ -202,7 +182,6 @@ async def sokoban_game(ctx,message,bot,level):
                     else:
                         continue     
                 else:
-                    print('nao tem caixa cima')
                     player.set_y(player.get_y()-1)
                     m[player.get_y(),player.get_x()] = 1
                     if(local_atual is None):
@@ -214,7 +193,6 @@ async def sokoban_game(ctx,message,bot,level):
                     emb.set_field_at(index=0,name='Movimentos restantes', value=movimentos, inline=True)
                     await message.edit(content=texto,embed=emb)
         elif(str(r[0].emoji) == '⬇️'):
-            print('movimento baixo')
             await message.remove_reaction('⬇️',ctx.message.author)
             #verifica se tem parede
             if(m[player.get_y()+1,player.get_x()] == -1):
@@ -222,7 +200,6 @@ async def sokoban_game(ctx,message,bot,level):
             else:
                 #verifica se tem caixa em baixo e se ela ta colada na parede
                 if(baixo is not None):
-                    print('tem baixo')
                     if(m[baixo.get_y()+1,baixo.get_x()] == 0 or m[baixo.get_y()+1,baixo.get_x()] == 3):
                         baixo.set_y(baixo.get_y()+1)
                         m[baixo.get_y(),baixo.get_x()] = 2
@@ -241,10 +218,8 @@ async def sokoban_game(ctx,message,bot,level):
                     else:
                         continue                 
                 else:
-                    print('nao tem caixa baixo')
                     player.set_y(player.get_y()+1)
                     m[player.get_y(),player.get_x()] = 1
-                    print(local_atual)
                     if(local_atual is None):
                         m[player.get_y()-1,player.get_x()] = 0
                     else:
@@ -274,11 +249,7 @@ async def sokoban_game(ctx,message,bot,level):
             break
         else:
             continue
-        print('Player {} x {}y'.format(player.get_x(),player.get_y()))
-        for c in caixas:
-            print('Caixa {} x {}y'.format(c.get_x(),c.get_y()))
-        for l in locais:
-            print('Locais {} x {}y'.format(l.get_x(),l.get_y()))
+
         if(verifica_ganhou(caixas,locais,level)):
             emb = discord.Embed(
                 title = "Fim de jogo",
@@ -300,8 +271,6 @@ async def sokoban_game(ctx,message,bot,level):
             break
         else:
             continue
-        print('-----------------')
-        print('\n \n')
     return ganhou
 
 def verifica_ganhou(caixas,locais,level):
@@ -312,7 +281,6 @@ def verifica_ganhou(caixas,locais,level):
                 certos += 1
             else:
                 continue
-    print('Certos ',certos)
     return certos == level
 
 def find(predicate,seq):

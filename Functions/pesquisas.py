@@ -172,11 +172,13 @@ def busca_crypto(simbolo):
             dict_preco = dict_preco['data']
             dict_preco = dict_preco['quote']
             dict_preco = dict_preco['USD']
-            
+            if(not dict_preco['price']):
+                dict_preco['price'] = 0
             crypto = Crypto(dict_info['name'],simbolo,dict_info['logo'],dict_info['urls']['website'][0],dict_preco['price'])
             
             return crypto
         else:
-            return None
+            dict_info = json.loads(response.content)
+            return dict_info['status']['error_message']
     except (ConnectionError, Timeout, TooManyRedirects) as e:
         print(e)

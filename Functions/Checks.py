@@ -152,7 +152,7 @@ async def c_error(ctx,error):
             h = help_command(ctx.command,p)
             await ctx.send(embed=h)
     else:
-        mensagem = 'Um erro inesperado acontenceu.'
+        mensagem = 'Um erro inesperado acontenceu.\n{}'.format(error)
         print("Erro: ",error)
         print("Tipo: ",type(error))
         print(ctx.message.content)

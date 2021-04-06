@@ -9,6 +9,8 @@ import Functions.pesquisas
 from importlib import reload
 reload(Functions.pesquisas)
 
+from Functions.Classes import Crypto
+
 from Functions.pesquisas import dolar,euro,dolar_hoje,euro_hoje,libra,libra_hoje,corona,topcorona,busca_crypto
 
 class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
@@ -188,7 +190,7 @@ class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
     @commands.cooldown(1,15, commands.BucketType.channel)
     async def crypto(self, ctx, simbolo: str):
         crypto = busca_crypto(simbolo.upper())
-        if(crypto):
+        if(isinstance(crypto, Crypto)):
             emb = discord.Embed(
                 title = crypto.get_nome,
                 description = crypto.simbolo,
@@ -199,6 +201,6 @@ class Apis(commands.Cog,name='Pesquisas dolar,euro,corona'):
             emb.set_thumbnail(url=crypto.get_logo)
             await ctx.send(embed=emb)
         else:
-            await ctx.send('Erro')
+            await ctx.send('Erro: '+ crypto)
 def setup(bot):
     bot.add_cog(Apis(bot))
