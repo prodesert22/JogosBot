@@ -331,5 +331,18 @@ def func_minifurra(text):
     image_binary.seek(0)
     return image_binary
 
-# imagem = download_image('https://media.discordapp.net/attachments/506963931705638915/721565940264992848/magik.png')
-# func_spin(imagem)
+def func_flip(image):
+    i = Image.open(image)
+    im_flip = ImageOps.flip(i)
+    image_binary = BytesIO()
+    im_flip.save(image_binary, format='PNG')
+    image_binary.seek(0)
+    return image_binary
+
+def func_flop(image):
+    i = Image.open(image)
+    im_mirror = ImageOps.mirror(i)
+    image_binary = BytesIO()
+    im_mirror.save(image_binary, format='PNG')
+    image_binary.seek(0)
+    return image_binary

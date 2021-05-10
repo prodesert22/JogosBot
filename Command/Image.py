@@ -9,7 +9,7 @@ reload(Functions.Fun_image)
 
 from Functions.Fun_image import Error_image
 from Functions.Fun_image import get_image,download_image,verifica_url
-from Functions.Fun_image import func_magik,func_burn,func_haah,func_hooh,func_waaw,func_woow,func_spin,func_ancap,func_gay,func_gaben,func_logan,func_nazi,func_rotate,func_trump,func_ussr,func_minifurra
+from Functions.Fun_image import func_magik,func_burn,func_haah,func_hooh,func_waaw,func_woow,func_spin,func_ancap,func_gay,func_gaben,func_logan,func_nazi,func_rotate,func_trump,func_ussr,func_minifurra,func_flip,func_flop
 
 class Image(commands.Cog,name= "Edição de imagem"):
     def __init__ (self,bot):
@@ -523,7 +523,58 @@ class Image(commands.Cog,name= "Edição de imagem"):
             else:
                 await ctx.send('Erro, url inválida.')
 
+    @commands.command(name='flip', 
+    usage='?flip <url1>: Opcional',
+    description='Inverte a imagem de cima para baixo..',
+    brief='?flip \n?flip <url>')
+    @commands.cooldown(1,10, commands.BucketType.user)
+    async def flip(self,ctx, url:typing.Optional[str] = None):
+        if(url is None):
+            image = await get_image(ctx.message)
+            if isinstance(image,Error_image):
+                await ctx.send(image.get_message())
+            else:
+                img = func_flip(image)
+                file = discord.File(fp=img,filename='spin.gif')
+                await ctx.send(file=file)
+        else:
+            if verifica_url(url) == True:
+                image = download_image(url)
+                if isinstance(image,Error_image):
+                    await ctx.send(image.get_message())
+                else:
+                    img = func_flip(image)
+                    file = discord.File(fp=img,filename=f'spin.gif')
+                    await ctx.send(file=file)
+            else:
+                await ctx.send('Erro, url inválida.')
 
+    @commands.command(name='flop', 
+    usage='?flop <url1>: Opcional',
+    description='Inverte a imagem de cima para baixo.',
+    brief='?flop \n?flop <url>')
+    @commands.cooldown(1,10, commands.BucketType.user)
+    async def flop(self,ctx, url:typing.Optional[str] = None):
+        if(url is None):
+            image = await get_image(ctx.message)
+            if isinstance(image,Error_image):
+                await ctx.send(image.get_message())
+            else:
+                img = func_flop(image)
+                file = discord.File(fp=img,filename='spin.gif')
+                await ctx.send(file=file)
+        else:
+            if verifica_url(url) == True:
+                image = download_image(url)
+                if isinstance(image,Error_image):
+                    await ctx.send(image.get_message())
+                else:
+                    img = func_flop(image)
+                    file = discord.File(fp=img,filename=f'spin.gif')
+                    await ctx.send(file=file)
+            else:
+                await ctx.send('Erro, url inválida.')
+                
     @commands.command(name='burn', 
     usage='?burn <url1>: Opcional',
     description='Gif da imagem queimando.',

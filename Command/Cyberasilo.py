@@ -1,11 +1,12 @@
 import asyncio
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 import json
 import random
 import re
 import requests
+import quantumrandom
 
 from io import BytesIO
 
@@ -28,7 +29,9 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             self.emoji = '🐮'
             self.hidden = False
             self.admin = False
-
+            self.random = random.randint(0,3)
+            self.get_random.start()
+            
     def get_emoji(self):
         return self.emoji
 
@@ -121,7 +124,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
     usage='?burro',
     description='Uma pessoal random ganha a tag de burro.',
     brief='?burro')
-    #@Checks.is_Cyber()
+    @Checks.is_Cyber()
     @commands.cooldown(1,300, commands.BucketType.guild)
     async def burro(self,ctx):
         with open('Data/burros.json') as json_file:
@@ -176,7 +179,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             lista_burros = busca_top_burros()
             pags_burro = list()
             if(lista_burros):
-                lista_burro_server =list()
+                lista_burro_server = list()
                 for burro in lista_burros:
                     if(ctx.guild.get_member(burro.get_id()) is not None):
                         lista_burro_server.append(burro)
@@ -187,7 +190,6 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
                     title='Lista de burros do server'
                 )
                 cont = 0
-                cont_pag = 1
                 for num in range(len(lista_burro_server)):
                     cont += 1
                     membro = ctx.guild.get_member(lista_burro_server[num].get_id())
@@ -231,35 +233,26 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
     @Checks.is_Cyber()
     @commands.cooldown(1,60, commands.BucketType.guild)
     async def gostosa(self,ctx):
-        with open('Data/gostosas.json') as json_file:
-            gostosa_json = json.load(json_file)
-            lista_gostosa = gostosa_json['gostosas']
-            role = discord.utils.get(ctx.guild.roles, name="webnamorada")
-            gostosas = list()
-            for m in role.members:
-                if m.id != 552595247809429546 and m.id != 525447699579797505 and m.id != 238803776507478017 and m.id != 523626016145539073 and m.id != 304873309164535808 and m.id != 323236550555074562 and m.id !=361181769380397058:
-                    if(not m.id in lista_gostosa):
-                        gostosas.append(m)
-            random.shuffle(gostosas)
-            gostosa = random.choice(gostosas)
-            lista_gostosa.pop(0)
-            lista_gostosa.append(gostosa.id)
-            membro = busca_gostosa(gostosa.id)
-            if(membro):
-                update_gostosa(gostosa.id,membro[1]+1)
-            else:
-                insert_gostosa(gostosa.id)
-            role_burro = discord.utils.get(ctx.guild.roles, name="Burro")
-            if(role_burro in gostosa.roles):
-                response = requests.get('https://media.discordapp.net/attachments/223594824681521152/707385777037901944/EQH1UEyWoAEW1jn.png')
-                img = BytesIO(response.content)
-                file = discord.File(img,filename='burra_e_gostosa.png')
-                await ctx.send(content='<@{}> gostosa'.format(gostosa.id),file=file)
-            else:
-                await ctx.send('<@{}> gostosa'.format(gostosa.id))
-        with open('Data/gostosas.json','w') as json_file:
-            gostosa_json['gostosas'] = lista_gostosa
-            json.dump(gostosa_json, json_file, indent=4)
+        role = discord.utils.get(ctx.guild.roles, name="webnamorada")
+        gostosas = list()
+        for m in role.members:
+            if m.id != 552595247809429546 and m.id != 525447699579797505 and m.id != 238803776507478017 and m.id != 523626016145539073 and m.id != 304873309164535808 and m.id != 323236550555074562 and m.id !=361181769380397058:
+                gostosas.append(m)
+        random.shuffle(gostosas)
+        gostosa = gostosas[self.random]
+        membro = busca_gostosa(gostosa.id)
+        if(membro):
+            update_gostosa(gostosa.id,membro[1]+1)
+        else:
+            insert_gostosa(gostosa.id)
+        role_burro = discord.utils.get(ctx.guild.roles, name="Burro")
+        if(role_burro in gostosa.roles):
+            response = requests.get('https://media.discordapp.net/attachments/223594824681521152/707385777037901944/EQH1UEyWoAEW1jn.png')
+            img = BytesIO(response.content)
+            file = discord.File(img,filename='burra_e_gostosa.png')
+            await ctx.send(content='<@{}> gostosa'.format(gostosa.id),file=file)
+        else:
+            await ctx.send('<@{}> gostosa'.format(gostosa.id))
 
     @commands.command(name='topgostosa',
     usage='?topgostosa',
@@ -290,12 +283,12 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
 
     @commands.command(name='luacs',
     usage='?luacs',
-    description='Luacs baianor <:baiano_cy:568072061034037248>.',
+    description='Luacs baianor <:baiano_cy:769252712159903754>.',
     brief='?luacs')
     @Checks.is_Cyber()
     @commands.cooldown(1,10, commands.BucketType.user)
     async def luacs(self,ctx):
-        await ctx.send("Luacs baianor <:baiano_cy:568072061034037248>")
+        await ctx.send("Luacs baianor <:baiano_cy:769252712159903754>")
 
     @commands.command(name='machista',
     usage='?machista',
@@ -375,9 +368,24 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             try:
                 m == await self.bot.wait_for('message', check=check, timeout=10)
                 await ctx.send('<@207294581266579457> você ae.')
+                break
             except asyncio.TimeoutError:
                 await ctx.send('<@595374017406566400> baiano, acorda ai.')
                 break
-    
+            
+    @tasks.loop(seconds=5.0)
+    async def get_random(self):
+        guild =  self.bot.get_guild(223594824681521152)
+        role = discord.utils.get(guild.roles, name="webnamorada")
+        gostosas = list()
+        for m in role.members:
+            if m.id != 552595247809429546 and m.id != 525447699579797505 and m.id != 238803776507478017 and m.id != 523626016145539073 and m.id != 304873309164535808 and m.id != 323236550555074562 and m.id !=361181769380397058:
+                gostosas.append(m)
+        self.random = int(quantumrandom.randint(0, len(gostosas)))
+        
+    @get_random.before_loop
+    async def before_printer(self):
+        await self.bot.wait_until_ready()
+        
 def setup(bot):
     bot.add_cog(Cyber(bot))

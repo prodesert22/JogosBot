@@ -99,7 +99,7 @@ class Help(commands.Cog):
                     continue
                 for c in c_ext.walk_commands():
                     comandos += "__**{}**__ ".format(c) 
-                h.add_field(name="{}**{}**".format(c_ext.get_emoji(),nome),value=comandos,inline=True)
+                h.add_field(name="{} **{}**".format(c_ext.get_emoji(),nome),value=comandos,inline=True)
             await ctx.send(embed=h)
         else:
             pass

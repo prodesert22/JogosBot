@@ -54,9 +54,8 @@ class Utils(commands.Cog,name= "Utilidades"):
     description='Busca a imagem do usuario.',
     brief='?avatar @john \n?avatar john \n?avatar 534535235386192929 1000')
     @commands.cooldown(1,10, commands.BucketType.user)
-    async def avatar(self, ctx, Member: Checks.Busca_User):
-        print(Member)
-        if Member:
+    async def avatar(self, ctx, Member: Checks.Busca_User = 'self ctx.message.author'):
+        if (isinstance(Member,str) is not True):
             embed=discord.Embed(title=f"Imagem de perfil de {Member.name}.")
             embed.set_image(url=Member.avatar_url)
             await ctx.send(embed=embed)
