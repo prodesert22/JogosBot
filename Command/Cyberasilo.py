@@ -120,6 +120,23 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
         elif(id_user == 493245195060641792 or id_user == 239949378700312576):
             await ctx.send('<@{}>, furra vai se foder <:pistoranjo_cy:591028729216761897>'.format(id_user))
 
+    @commands.command(name='egirl',
+    usage='?egirl',
+    description='vick egirl virou furra',
+    brief='?egirl')
+    @Checks.is_Cyber()
+    @commands.cooldown(1,10, commands.BucketType.user)
+    async def egirl(self,ctx):
+        id_user = ctx.author.id 
+        if(is_antifurro(ctx) == True):
+            await ctx.send('<@{}>, egirl furra'.format(413147641287933952))
+        elif(id_user == 206108254273536000):
+            await ctx.send('<@{}>, furro vai se foder <:pistoranjo_cy:591028729216761897>'.format(id_user))
+        elif(id_user == 493245195060641792 or id_user == 202537248267304960):
+            await ctx.send('<@{}>, furra vai se foder <:pistoranjo_cy:591028729216761897>'.format(id_user))
+		elif(id_user == 413147641287933952):
+            await ctx.send('<@{}>, egirl furra morra <:pistoranjo_cy:591028729216761897>'.format(id_user))
+
     @commands.command(name='burro',
     usage='?burro',
     description='Uma pessoal random ganha a tag de burro.',
