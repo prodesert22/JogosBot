@@ -1,6 +1,6 @@
 import asyncio
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 import json
 import random
@@ -30,7 +30,6 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             self.hidden = False
             self.admin = False
             self.random = random.randint(0,3)
-            self.get_random.start()
             
     def get_emoji(self):
         return self.emoji
@@ -50,7 +49,6 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             async for msg in message.channel.history(limit=3):
                 if(cont!= 0):
                     if(m == msg.content.lower() and message.author.id != msg.author.id and msg.author.bot == False ):
-                        print(msg.author,msg.content)
                         continue
                     else:
                         copy = False
@@ -251,6 +249,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             img = BytesIO(response.content)
             file = discord.File(img,filename='burra_e_gostosa.png')
             await ctx.send(content='<@{}> gostosa'.format(gostosa.id),file=file)
+            self.random = quantumrandom.randint(0,len(gostosas)-1)
         else:
             await ctx.send('<@{}> gostosa'.format(gostosa.id))
 
@@ -372,20 +371,6 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             except asyncio.TimeoutError:
                 await ctx.send('<@595374017406566400> baiano, acorda ai.')
                 break
-            
-    @tasks.loop(seconds=5.0)
-    async def get_random(self):
-        guild =  self.bot.get_guild(223594824681521152)
-        role = discord.utils.get(guild.roles, name="webnamorada")
-        gostosas = list()
-        for m in role.members:
-            if m.id != 552595247809429546 and m.id != 525447699579797505 and m.id != 238803776507478017 and m.id != 523626016145539073 and m.id != 304873309164535808 and m.id != 323236550555074562 and m.id !=361181769380397058:
-                gostosas.append(m)
-        self.random = int(quantumrandom.randint(0, len(gostosas)))
-        
-    @get_random.before_loop
-    async def before_printer(self):
-        await self.bot.wait_until_ready()
         
 def setup(bot):
     bot.add_cog(Cyber(bot))
