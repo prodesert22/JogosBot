@@ -249,7 +249,7 @@ class Cyber(commands.Cog,name= "Comandos autistas"):
             img = BytesIO(response.content)
             file = discord.File(img,filename='burra_e_gostosa.png')
             await ctx.send(content='<@{}> gostosa'.format(gostosa.id),file=file)
-            self.random = quantumrandom.randint(0,len(gostosas)-1)
+            self.random = int(quantumrandom.randint(0,len(gostosas)-1))
         else:
             await ctx.send('<@{}> gostosa'.format(gostosa.id))
 
